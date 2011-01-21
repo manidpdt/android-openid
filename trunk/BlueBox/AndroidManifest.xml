@@ -1,20 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-	android:versionCode="1" android:versionName="1.0" package="box.view">
+	android:versionCode="1" android:versionName="1.0" package="android.bluebox">
 	<application android:icon="@drawable/icon" android:label="@string/app_name">
 	
-		<activity android:name=".Main" android:label="@string/app_name">
+		<activity android:name=".view.Main" android:label="@string/app_name">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
 				<category android:name="android.intent.category.LAUNCHER" />
 			</intent-filter>
 		</activity>
 		
-		<activity android:name=".InitPasswordView" android:label="@+string/Set_Password">
+		<activity android:name=".view.InitPasswordView" android:label="@+string/Set_Password">
 		</activity>
 
-		<activity android:name=".InitQuestionView" android:label="@+string/Remind_Question">
+		<activity android:name=".view.InitQuestionView" android:label="@+string/Remind_Question">
 		</activity>
 
+		<activity android:name=".model.InitConfiguration" android:label="@+string/InitConfiguration">
+		</activity>
 	</application>
 </manifest> 
