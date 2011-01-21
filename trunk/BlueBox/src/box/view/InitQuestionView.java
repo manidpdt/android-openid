@@ -1,5 +1,6 @@
 package box.view;
 
+import box.model.InitConfiguration;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
