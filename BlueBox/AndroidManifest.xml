@@ -10,13 +10,15 @@
 			</intent-filter>
 		</activity>
 		
-		<activity android:name=".view.InitPasswordView" android:label="@+string/Set_Password">
+		<activity android:name=".view.InitPasswordView" android:label="@+string/SetPassword">
 		</activity>
 
-		<activity android:name=".view.InitQuestionView" android:label="@+string/Remind_Question">
+		<activity android:name=".view.InitQuestionView" android:label="@+string/RemindQuestion">
 		</activity>
-
+		
 		<activity android:name=".model.InitConfiguration" android:label="@+string/InitConfiguration">
 		</activity>
-	</application>
+
+	
+</application>
 </manifest> 
