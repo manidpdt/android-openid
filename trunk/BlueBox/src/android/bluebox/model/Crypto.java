@@ -11,10 +11,10 @@ import java.security.spec.AlgorithmParameterSpec;
 import javax.crypto.Cipher;
 import javax.crypto.CipherInputStream;
 import javax.crypto.CipherOutputStream;
+import javax.crypto.KeyGenerator;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.spec.SecretKeySpec;
 
 public class Crypto {
 
@@ -27,9 +27,6 @@ public class Crypto {
 
 	public Crypto(String password) {
 		
-		// Create key from password
-		SecretKey key = new SecretKeySpec(password.getBytes(), "DESede");
-		
 		// Create an 8-byte initialization vector
 		byte[] iv = new byte[] {
 				0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09,0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f
@@ -37,6 +34,11 @@ public class Crypto {
 
 		AlgorithmParameterSpec paramSpec = new IvParameterSpec(iv);
 		try {
+			
+			KeyGenerator keygen = KeyGenerator.getInstance("AES");
+			keygen.init(128);
+			SecretKey key = keygen.generateKey();
+			
 			ecipher = Cipher.getInstance(transformation);
 			dcipher = Cipher.getInstance(transformation);
 
@@ -49,6 +51,7 @@ public class Crypto {
 		} catch (InvalidKeyException e) {
 			e.printStackTrace();
 		} catch (InvalidAlgorithmParameterException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
