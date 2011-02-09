@@ -77,7 +77,7 @@ public class InitConfiguration extends Activity {
 			SecureRandom prng = SecureRandom.getInstance("SHA1PRNG");
 			strKey = new Integer(prng.nextInt()).toString();
 
-			String encryptedKey = Crypto2.encrypt(strKey, new File(StaticValue.KEY_FILE));
+			String encryptedKey = Crypto2.encrypt(strKey, new File(StaticValue.PWD_MD5));
 			
 			FileOutputStream fos = openFileOutput(StaticValue.KEY_FILE, Context.MODE_PRIVATE);
 			OutputStreamWriter out = new OutputStreamWriter(fos);
