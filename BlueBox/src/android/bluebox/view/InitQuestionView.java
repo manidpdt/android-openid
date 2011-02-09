@@ -59,13 +59,13 @@ public class InitQuestionView extends Activity {
 
 			/**Push password and remind question to InitConfiguration 
 			 */
-			//			b = new Bundle();
-			//			b.putString("pwd", pwd);
-			//			b.putString("remind", remind);
-			//			iInitConfiguration.putExtras(b);
-			//			
-			//			startActivity(iInitConfiguration); // 1 means create file
-			initConfig(pwd, remind);
+			b = new Bundle();
+			b.putString("pwd", pwd);
+			b.putString("remind", remind);
+			iInitConfiguration.putExtras(b);
+
+			startActivity(iInitConfiguration); // 1 means create file
+//			initConfig(pwd, remind);
 		}
 
 		public void initConfig(String pwd, String remind) {
@@ -86,9 +86,9 @@ public class InitQuestionView extends Activity {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-
 			}
 		}
+
 		private String byteArrayToHexString(byte[] b){
 			StringBuffer sb = new StringBuffer(b.length * 2);
 			for (int i = 0; i < b.length; i++){
