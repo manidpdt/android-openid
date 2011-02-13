@@ -2,20 +2,32 @@ package android.bluebox.model;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.security.GeneralSecurityException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Scanner;
 
 import javax.crypto.Cipher;
-import javax.crypto.KeyGenerator;
-import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
 public class Crypto2 {
 
 	public static final String AES = "AES";
 
+	public static String MD5(String str) {
+		try {
+			MessageDigest md5 = MessageDigest.getInstance("md5");
+			md5.update(str.getBytes(), 0, str.length());
+			String sig = new BigInteger(1, md5.digest()).toString();
+			return sig;
+		} catch (NoSuchAlgorithmException e) {
+			System.err.println("Can not use md5 algorithm");
+		}
+		return null;
+	}
+	
 	public static String encrypt(String value, File keyFile) throws GeneralSecurityException, IOException{
 		
 		SecretKeySpec sks = getSecretKeySpec(keyFile);
@@ -25,7 +37,7 @@ public class Crypto2 {
 		return byteArrayToHexString(encrypted);
 	}
 
-	public static String decrypted(String message, File keyFile) throws GeneralSecurityException, IOException {
+	public static String decrypt(String message, File keyFile) throws GeneralSecurityException, IOException {
 		SecretKeySpec sks = getSecretKeySpec(keyFile);
 		Cipher cipher = Cipher.getInstance(AES);
 		cipher.init(Cipher.DECRYPT_MODE, sks);

@@ -64,41 +64,7 @@ public class InitQuestionView extends Activity {
 			b.putString("remind", remind);
 			iInitConfiguration.putExtras(b);
 
-			startActivity(iInitConfiguration); // 1 means create file
-//			initConfig(pwd, remind);
-		}
-
-		public void initConfig(String pwd, String remind) {
-			File keyFile = new File(StaticValue.KEY_FILE);
-			if (!keyFile.exists()) {
-				try {
-					KeyGenerator keyGen = KeyGenerator.getInstance(AES);
-					keyGen.init(128);
-					SecretKey sk = keyGen.generateKey();
-					FileWriter fw = new FileWriter(keyFile);
-					fw.write(byteArrayToHexString(sk.getEncoded()));
-					fw.flush();
-					fw.close();
-				} catch (NoSuchAlgorithmException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		}
-
-		private String byteArrayToHexString(byte[] b){
-			StringBuffer sb = new StringBuffer(b.length * 2);
-			for (int i = 0; i < b.length; i++){
-				int v = b[i] & 0xff;
-				if (v < 16) {
-					sb.append('0');
-				}
-				sb.append(Integer.toHexString(v));
-			}
-			return sb.toString().toUpperCase();
+			startActivity(iInitConfiguration);
 		}
 	};
 

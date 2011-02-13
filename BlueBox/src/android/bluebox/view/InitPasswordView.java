@@ -58,7 +58,7 @@ public class InitPasswordView extends Activity {
 			
 			// if they do not match together
 			if (!s1.equals(s2)) {
-				Toast.makeText(getBaseContext(), "Your passwords does not match together",
+				Toast.makeText(getBaseContext(), "Your passwords do not match together",
 						Toast.LENGTH_LONG).show();
 			} else {
 				
