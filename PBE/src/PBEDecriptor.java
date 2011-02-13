@@ -17,7 +17,7 @@ public class PBEDecriptor {
 	public static void main (String args[]) throws Exception{
 		
 		filename = "clear.txt.des";
-		String password = "helloworld";
+		password = "helloworld";
 		
 		inFile = new FileInputStream(filename);
 		outFile = new FileOutputStream(filename + "dcr");
@@ -26,8 +26,10 @@ public class PBEDecriptor {
 		SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("PBEWithMD5AndDES");
 		SecretKey passwordKey = keyFactory.generateSecret(keySpec);
 		
+		/* Gia tri cua salt voi interations cua Ma hoa va giai ma PHAI GIONG NHAU */
+		
 		byte[] salt = new byte[] { 0x7d, 0x60, 0x43, 0x5f, 0x02, (byte) 0xe9, (byte) 0xe0, (byte) 0xae };
-		int iterations = 100;
+		int iterations = 2048;
 		
 		PBEParameterSpec parameterSpec = new PBEParameterSpec(salt, iterations);
 		
