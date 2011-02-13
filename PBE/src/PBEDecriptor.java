@@ -17,7 +17,7 @@ public class PBEDecriptor {
 	public static void main (String args[]) throws Exception{
 		
 		filename = "clear.txt.des";
-		String password = "new_helloworld";
+		String password = "helloworld";
 		
 		inFile = new FileInputStream(filename);
 		outFile = new FileOutputStream(filename + "dcr");
