@@ -18,7 +18,7 @@ public class PBECrypto {
 
 	public static void main (String args[]) throws Exception {
 		filename = "clear.txt";
-		String password = "helloworld";
+		password = "helloworld";
 
 		inFile = new FileInputStream(filename);
 		outFile = new FileOutputStream(filename + ".des");
