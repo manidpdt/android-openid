@@ -18,7 +18,9 @@
 		
 		<activity android:name=".model.InitConfiguration" android:label="@+string/InitConfiguration">
 		</activity>
-
 	
+		<activity android:name=".view.LoginView" android:label="@+string/LoginView">
+		</activity>
+		
 </application>
 </manifest> 
