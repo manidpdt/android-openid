@@ -1,17 +1,8 @@
 package android.bluebox.view;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
-
-import javax.crypto.KeyGenerator;
-import javax.crypto.SecretKey;
-
 import android.app.Activity;
 import android.bluebox.R;
 import android.bluebox.model.InitConfiguration;
-import android.bluebox.model.StaticValue;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;

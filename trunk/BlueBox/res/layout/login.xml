@@ -3,7 +3,39 @@
   xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="fill_parent"
   android:layout_height="fill_parent">
-  
-  
-  
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:gravity="center_vertical|center_horizontal"
+    android:layout_centerInParent="true"
+    >
+    <TextView android:id="@+id/txtRemind"
+    	android:layout_width="fill_parent"
+    	android:layout_height="wrap_content"
+    	android:text="Password"
+    	/>
+    <EditText android:id="@+id/edtLoginPassword"
+    	android:layout_width="fill_parent"
+    	android:layout_height="wrap_content"
+    	/>
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+   		android:orientation="horizontal"
+    	android:layout_width="wrap_content"
+    	android:layout_height="wrap_content"
+    >
+		<Button android:id="@+id/btnLoginLogin"
+			android:layout_width="100px"
+			android:gravity="center_vertical|center_horizontal"
+			android:layout_height="wrap_content"
+			android:text="Log in"
+			/>
+		<Button android:id="@+id/btnLoginClear"
+			android:layout_width="100px"
+			android:gravity="center_vertical|center_horizontal"
+			android:layout_height="wrap_content"
+			android:text="Clear"
+			/>
+	</LinearLayout>
+</LinearLayout>
 </RelativeLayout>
