@@ -1,5 +1,9 @@
 package android.bluebox.model;
 
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
@@ -59,5 +63,18 @@ public class Crypto3 {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	public static String createMD5(String str) {
+		String sig = null;
+		try {
+			MessageDigest md5 = MessageDigest.getInstance("md5");
+			md5.update(str.getBytes(), 0, str.length());
+			BigInteger tmp = new BigInteger(1, md5.digest());
+			sig = tmp.toString();
+		} catch (NoSuchAlgorithmException e) {
+			System.err.println("Can not use md5 algorithm");
+		}
+		return sig;
 	}
 }

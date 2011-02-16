@@ -33,7 +33,7 @@ public class KeyCrypto {
 
 		// generate super secret key and encrypt it by using PasswordCrypto
 		SecureRandom prng = SecureRandom.getInstance("SHA1PRNG");
-		String secretKey = new Integer(prng.nextInt()).toString();
+		secretKey = new Integer(prng.nextInt()).toString();
 		String encryptedKey = passwordCrypto.encrypt(secretKey);
 		
 		out.write(encryptedKey + "\n");
@@ -52,6 +52,10 @@ public class KeyCrypto {
 
 		out.flush();
 		out.close();
+	}
+	
+	public String getMD5Key() {
+		return Crypto3.createMD5(secretKey);
 	}
 
 	public String encrypt(String str) {
