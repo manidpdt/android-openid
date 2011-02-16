@@ -6,7 +6,6 @@ import android.app.Activity;
 import android.bluebox.R;
 import android.bluebox.model.PasswordCrypto;
 import android.bluebox.model.StaticValue;
-import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;

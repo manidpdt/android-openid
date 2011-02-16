@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.util.Properties;
 
 import android.app.Activity;
 import android.content.Context;
@@ -79,6 +80,9 @@ public class InitConfiguration extends Activity {
 	public void createPointerFile() {
 		try {
 			FileOutputStream fos = openFileOutput(StaticValue.POINTER_FILE, Context.MODE_PRIVATE);
+			Properties properties = new Properties();
+			properties.put("header", keyCrypto.getMD5Key());
+			properties.store(fos, "");
 			fos.close();
 		} catch (FileNotFoundException e) {
 		} catch (IOException e) {
@@ -88,6 +92,9 @@ public class InitConfiguration extends Activity {
 	public void createDataFile() {
 		try {
 			FileOutputStream fos = openFileOutput(StaticValue.DATA_FILE, Context.MODE_PRIVATE);
+			Properties properties = new Properties();
+			properties.put("header", keyCrypto.getMD5Key());
+			properties.store(fos, "");
 			fos.close();
 		} catch (FileNotFoundException e) {
 		} catch (IOException e) {
