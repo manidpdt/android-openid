@@ -77,6 +77,6 @@ public class PasswordCrypto {
 	}
 	
 	public String decrypt(String str) {
-		return blueCrypto.decript(str);
+		return blueCrypto.decrypt(str);
 	}
 }

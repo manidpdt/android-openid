@@ -1,5 +1,6 @@
 package android.bluebox.model;
 
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -12,7 +13,6 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 public class InitConfiguration extends Activity {
-
 	private PasswordCrypto passwordCrypto;
 	private KeyCrypto keyCrypto;
 
@@ -34,10 +34,23 @@ public class InitConfiguration extends Activity {
 		createPwdMD5(pwd);
 		createRemindFile(remind);
 		createKeyFile(pwd);
-		createPointerFile();
-		createDataFile();
+		try {
+			FileInputStream fis = openFileInput(StaticValue.KEY_FILE); 
+			keyCrypto.init(fis, passwordCrypto);
+			fis.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		createTagFile();
+		createSemanticFile();
+		createWorkspaceFile();
 	}
 
+	// Ma hoa chuoi pwd theo md5
 	public void createPwdMD5(String pwd) {
 		try {
 			FileOutputStream fos = openFileOutput(StaticValue.PWD_MD5, Context.MODE_PRIVATE);
@@ -52,6 +65,7 @@ public class InitConfiguration extends Activity {
 		}
 	}
 
+	// tao file goi y password cho nguoi dung
 	public void createRemindFile(String remind) {
 		try {
 			FileOutputStream fos = openFileOutput(StaticValue.PROPERTIES_FILE, Context.MODE_PRIVATE);
@@ -66,6 +80,7 @@ public class InitConfiguration extends Activity {
 		}
 	}
 
+	// tao key
 	public void createKeyFile(String pwd) {
 		try {
 			FileOutputStream fos = openFileOutput(StaticValue.KEY_FILE, Context.MODE_PRIVATE);
@@ -77,25 +92,84 @@ public class InitConfiguration extends Activity {
 		}
 	}
 
-	public void createPointerFile() {
+	/*
+	 * Tao file luu nhung tag hien tai. Thong tin cac tag se duoc luu trong file,
+	 * ten file dang: "T" + ten cac tag da duoc ma hoa.
+	 */
+	
+	public void createTagFile() {
 		try {
-			FileOutputStream fos = openFileOutput(StaticValue.POINTER_FILE, Context.MODE_PRIVATE);
+			FileOutputStream fos = openFileOutput(StaticValue.TAG_FILE, Context.MODE_PRIVATE);
 			Properties properties = new Properties();
+			
+			// luu ma md5 cua key de tranh truong hop bi chep de tu may khac
+			
 			properties.put("header", keyCrypto.getMD5Key());
-			properties.store(fos, "");
+
+			// So luong workspace hien tai = 2
+			
+			properties.put("n", "0");
+			
+			properties.store(fos, null);
 			fos.close();
 		} catch (FileNotFoundException e) {
 		} catch (IOException e) {
 		}
 	}
 
-	public void createDataFile() {
+	/*
+	 * Tao file luu nhung semantic hien tai. Thong tin cac tag se duoc luu trong file,
+	 * ten file dang: "S" + ten cac tag da duoc ma hoa.
+	 */
+	
+	public void createSemanticFile() {
 		try {
-			FileOutputStream fos = openFileOutput(StaticValue.DATA_FILE, Context.MODE_PRIVATE);
+			FileOutputStream fos = openFileOutput(StaticValue.SEMANTIC_FILE, Context.MODE_PRIVATE);
 			Properties properties = new Properties();
+			
+			//luu ma md5 cua key de tranh truong hop bi chep de tu may khac
+			
 			properties.put("header", keyCrypto.getMD5Key());
+			
+			// So luong workspace hien tai = 2
+			
+			properties.put("n", "0");
+			
+			
 			properties.store(fos, "");
 			fos.close();
+		} catch (FileNotFoundException e) {
+		} catch (IOException e) {
+		}
+	}
+	
+	/*
+	 * Tao file luu nhung workspace hien tai. Thong tin cac workspace se duoc luu trong file,
+	 * ten file dang: "W" + ten cac tag da duoc ma hoa.
+	 */
+	
+	public void createWorkspaceFile() {
+		try {
+			FileOutputStream fos = openFileOutput(StaticValue.WORKSPACE_FILE, Context.MODE_PRIVATE);
+			Properties properties = new Properties();
+			
+			//luu ma md5 cua key de tranh truong hop bi chep de tu may khac
+			
+			properties.put("header", keyCrypto.getMD5Key());
+			
+			// So luong workspace hien tai = 2
+			
+			properties.put("n", "2");
+			
+			// Them 1 so default workspace: Home, Office
+			
+			String wp = keyCrypto.encrypt("Home");
+			properties.put("w1", wp);
+			wp = keyCrypto.encrypt("Office");
+			properties.put("w2", wp);
+			
+			properties.store(fos, null);
+			
 		} catch (FileNotFoundException e) {
 		} catch (IOException e) {
 		}

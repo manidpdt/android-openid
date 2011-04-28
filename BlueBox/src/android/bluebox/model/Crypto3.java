@@ -48,7 +48,7 @@ public class Crypto3 {
 		return null;
 	}
 
-	public String decript(String str) {
+	public String decrypt(String str) {
 
 		try {
 			byte[] input = str.getBytes();

@@ -19,11 +19,11 @@ public class Main extends Activity{
 		setContentView(R.layout.main);
 
 		Intent intent;
-		if (checkExistedFile()) {
-			intent = new Intent(Main.this, LoginView.class);
-		} else {
+//		if (checkExistedFile()) {
+//			intent = new Intent(Main.this, LoginView.class);
+//		} else {
 			intent = new Intent(Main.this, InitPasswordView.class);
-		}
+//		}
 		startActivityForResult(intent, 0);
 	}
 
