@@ -22,7 +22,9 @@ public class KeyCrypto {
 		BufferedReader br = new BufferedReader(new InputStreamReader(dis));
 
 		secretKey = passwordCrypto.decrypt(br.readLine());
-		salt = passwordCrypto.decrypt(br.readLine()).getBytes();
+		String strSalt = br.readLine();
+		strSalt = passwordCrypto.decrypt(strSalt);
+		salt = strSalt.getBytes();
 		iterationCount = Integer.parseInt(passwordCrypto.decrypt(br.readLine()));
 
 		blueCrypto = new Crypto3(secretKey, salt, iterationCount);
@@ -44,8 +46,9 @@ public class KeyCrypto {
 		Random rnd = new Random();
 		rnd.nextBytes(salt);
 		iterationCount = 2020;
+		String strSalt = salt.toString();
 
-		String encryptedSalt = passwordCrypto.encrypt(new String(salt));
+		String encryptedSalt = passwordCrypto.encrypt(strSalt);
 		String encryptedIterationCount = passwordCrypto.encrypt(Integer.toString(iterationCount));
 		out.write(encryptedSalt + "\n");
 		out.write(encryptedIterationCount);
@@ -63,6 +66,6 @@ public class KeyCrypto {
 	}
 
 	public String decrypt(String str) {
-		return blueCrypto.decript(str);
+		return blueCrypto.decrypt(str);
 	}
 }
