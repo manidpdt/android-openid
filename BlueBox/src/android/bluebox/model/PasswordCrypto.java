@@ -6,14 +6,13 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.util.Random;
 
 public class PasswordCrypto {
 	
 	private String password;
 	private String strMD5;
-	private byte[] salt = new byte[8];
-	private int iterationCount;
+	private byte[] salt = new byte[] { 0x7d, 0x60, 0x43, 0x5f, 0x02, (byte) 0xe9, (byte) 0xe0, (byte) 0xae };
+	private int iterationCount = 1010;
 	
 	private Crypto3 blueCrypto; 
 	
@@ -28,9 +27,12 @@ public class PasswordCrypto {
 		BufferedReader br = new BufferedReader(new InputStreamReader(dis));
 		
 		strMD5 = br.readLine();
-		salt = br.readLine().getBytes();
-		String str = br.readLine();
-		iterationCount = Integer.parseInt(str);
+//		salt = br.readLine().getBytes();
+//		String str = br.readLine();
+//		iterationCount = Integer.parseInt(str);
+		br.close();
+		dis.close();
+		fis.close();
 	}
 	
 	// Set new password for PasswordCrypto and re-init.
@@ -49,17 +51,17 @@ public class PasswordCrypto {
 		
 		// write MD5 encription of password to file. This string is used to verify correct password later.
 		
-		out.write(pwdMD5 + "\n");
+		out.write(pwdMD5);
 		
 		// generate salt and iterationCount for crypto
 		
-		 salt = new byte[8];
-		 Random rnd = new Random();
-		 rnd.nextBytes(salt);
-		 iterationCount = 1010;
-		 
-		 out.write(salt + "\n");
-		 out.write(Integer.toString(iterationCount));
+//		 salt = new byte[8];
+//		 Random rnd = new Random();
+//		 rnd.nextBytes(salt);
+//		 iterationCount = 1010;
+//		 
+//		 out.write(salt + "\n");
+//		 out.write(Integer.toString(iterationCount));
 		 
 		 out.flush();
 		 out.close();

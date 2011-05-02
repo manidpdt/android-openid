@@ -4,8 +4,10 @@ import java.io.FileNotFoundException;
 
 import android.app.Activity;
 import android.bluebox.R;
+import android.bluebox.model.KeyCrypto;
 import android.bluebox.model.PasswordCrypto;
 import android.bluebox.model.StaticValue;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -19,7 +21,7 @@ public class LoginView extends Activity {
 	Button btnLogin;
 	Button btnClear;
 	
-	PasswordCrypto passwordCrypto;
+//	PasswordCrypto passwordCrypto;
 	
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -39,11 +41,25 @@ public class LoginView extends Activity {
 		@Override
 		public void onClick(View arg0) {
 			try {
-				passwordCrypto = new PasswordCrypto();
-				passwordCrypto.readFile(openFileInput(StaticValue.PWD_MD5));
+				StaticValue.passwordCrypto = new PasswordCrypto();
+				StaticValue.passwordCrypto.readFile(openFileInput(StaticValue.PWD_MD5));
 				String pwd = edtPassword.getText().toString();
-				String strNotice = (passwordCrypto.checkPassword(pwd))? "Correct" : "Incorrect";
-				Toast.makeText(getBaseContext(), strNotice, Toast.LENGTH_LONG).show();
+				boolean login = StaticValue.passwordCrypto.checkPassword(pwd);
+				
+				if (login) {
+					
+					StaticValue.passwordCrypto.setPassword(pwd);
+					
+					StaticValue.keyCrypto = new KeyCrypto();
+					StaticValue.keyCrypto.init(openFileInput(StaticValue.KEY_FILE), StaticValue.passwordCrypto);
+					
+					Toast.makeText(getBaseContext(), "Successful", Toast.LENGTH_LONG).show();
+					Intent iListOfWorkspace = new Intent(LoginView.this, ListOfWorkspaceView.class);
+					startActivity(iListOfWorkspace);
+				} else {
+					Toast.makeText(getBaseContext(), "Unsuccessful", Toast.LENGTH_LONG).show();
+				}
+				
 			} catch (FileNotFoundException e) {
 				Toast.makeText(getBaseContext(), "File not found", Toast.LENGTH_LONG).show();
 				e.printStackTrace();

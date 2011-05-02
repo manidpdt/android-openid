@@ -13,8 +13,8 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 public class InitConfiguration extends Activity {
-	private PasswordCrypto passwordCrypto;
-	private KeyCrypto keyCrypto;
+//	public PasswordCrypto passwordCrypto;
+//	public KeyCrypto keyCrypto;
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -28,15 +28,15 @@ public class InitConfiguration extends Activity {
 
 	public void initConfig(String pwd, String remind) {
 
-		passwordCrypto = new PasswordCrypto();
-		keyCrypto = new KeyCrypto();
+		StaticValue.passwordCrypto = new PasswordCrypto();
+		StaticValue.keyCrypto = new KeyCrypto();
 		
 		createPwdMD5(pwd);
 		createRemindFile(remind);
 		createKeyFile(pwd);
 		try {
 			FileInputStream fis = openFileInput(StaticValue.KEY_FILE); 
-			keyCrypto.init(fis, passwordCrypto);
+			StaticValue.keyCrypto.init(fis, StaticValue.passwordCrypto);
 			fis.close();
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
@@ -54,7 +54,7 @@ public class InitConfiguration extends Activity {
 	public void createPwdMD5(String pwd) {
 		try {
 			FileOutputStream fos = openFileOutput(StaticValue.PWD_MD5, Context.MODE_PRIVATE);
-			passwordCrypto.initFile(fos, pwd);
+			StaticValue.passwordCrypto.initFile(fos, pwd);
 			fos.close();
 		} catch (FileNotFoundException e) {
 			System.err.println("Can not create pwd_md5");
@@ -84,7 +84,7 @@ public class InitConfiguration extends Activity {
 	public void createKeyFile(String pwd) {
 		try {
 			FileOutputStream fos = openFileOutput(StaticValue.KEY_FILE, Context.MODE_PRIVATE);
-			keyCrypto.initFile(fos, passwordCrypto);
+			StaticValue.keyCrypto.initFile(fos, StaticValue.passwordCrypto);
 			fos.close();
 		} catch (FileNotFoundException e) {
 		} catch (IOException e) {
@@ -104,7 +104,7 @@ public class InitConfiguration extends Activity {
 			
 			// luu ma md5 cua key de tranh truong hop bi chep de tu may khac
 			
-			properties.put("header", keyCrypto.getMD5Key());
+			properties.put("header", StaticValue.keyCrypto.getMD5Key());
 
 			// So luong workspace hien tai = 2
 			
@@ -129,7 +129,7 @@ public class InitConfiguration extends Activity {
 			
 			//luu ma md5 cua key de tranh truong hop bi chep de tu may khac
 			
-			properties.put("header", keyCrypto.getMD5Key());
+			properties.put("header", StaticValue.keyCrypto.getMD5Key());
 			
 			// So luong workspace hien tai = 2
 			
@@ -155,7 +155,7 @@ public class InitConfiguration extends Activity {
 			
 			//luu ma md5 cua key de tranh truong hop bi chep de tu may khac
 			
-			properties.put("header", keyCrypto.getMD5Key());
+			properties.put("header", StaticValue.keyCrypto.getMD5Key());
 			
 			// So luong workspace hien tai = 2
 			
@@ -163,9 +163,9 @@ public class InitConfiguration extends Activity {
 			
 			// Them 1 so default workspace: Home, Office
 			
-			String wp = keyCrypto.encrypt("Home");
+			String wp = "Home"; //StaticValue.keyCrypto.encrypt("Home");
 			properties.put("w1", wp);
-			wp = keyCrypto.encrypt("Office");
+			wp = "Office";// StaticValue.keyCrypto.encrypt("Office");
 			properties.put("w2", wp);
 			
 			properties.store(fos, null);
