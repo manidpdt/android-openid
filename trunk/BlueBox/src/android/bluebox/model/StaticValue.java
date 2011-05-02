@@ -9,6 +9,8 @@ public class StaticValue {
 	public static final String SEMANTIC_FILE = "bluebox.semantic";
 	public static final String WORKSPACE_FILE = "bluebox.workspace";
 	
+	public static PasswordCrypto passwordCrypto;
+	public static KeyCrypto keyCrypto;
 	/*
 	 * Trash value
 	 */

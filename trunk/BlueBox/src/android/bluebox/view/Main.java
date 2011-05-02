@@ -22,8 +22,10 @@ public class Main extends Activity{
 //		if (checkExistedFile()) {
 //			intent = new Intent(Main.this, LoginView.class);
 //		} else {
-			intent = new Intent(Main.this, InitPasswordView.class);
+//			intent = new Intent(Main.this, InitPasswordView.class);
 //		}
+		intent = new Intent(Main.this, InitPasswordView.class);
+//		intent = new Intent(Main.this, ListOfWorkspaceView.class);
 		startActivityForResult(intent, 0);
 	}
 

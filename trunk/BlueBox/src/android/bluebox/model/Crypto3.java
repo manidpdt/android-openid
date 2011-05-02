@@ -37,7 +37,8 @@ public class Crypto3 {
 			byte[] input = str.getBytes();
 			byte[] output = enCipher.update(input, 0, input.length);
 			output = enCipher.doFinal();
-			return new String(output);
+			String tmp = new String(output);
+			return tmp;
 		} catch (IllegalBlockSizeException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -53,8 +54,8 @@ public class Crypto3 {
 		try {
 			byte[] input = str.getBytes();
 			byte[] output = deCipher.update(input, 0, input.length);
-			output = deCipher.doFinal();
-			return new String(output);
+			output = deCipher.doFinal(str.getBytes());
+			return output.toString();
 		} catch (IllegalBlockSizeException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

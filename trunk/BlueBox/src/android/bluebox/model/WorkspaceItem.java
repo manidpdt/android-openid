@@ -2,9 +2,9 @@ package android.bluebox.model;
 
 public class WorkspaceItem {
 	
-	private String name = null;
-	private String accuracy = null;
-	private String lastVisit = null;
+	private String name = "";
+	private String accuracy = "";
+	private String lastVisit = "";
 	
 	public void setName(String name) {
 		this.name = name;
