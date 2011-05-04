@@ -163,9 +163,9 @@ public class InitConfiguration extends Activity {
 			
 			// Them 1 so default workspace: Home, Office
 			
-			String wp = "Home"; //StaticValue.keyCrypto.encrypt("Home");
+			String wp = StaticValue.keyCrypto.encrypt("Vo Minh Huy");
 			properties.put("w1", wp);
-			wp = "Office";// StaticValue.keyCrypto.encrypt("Office");
+			wp = StaticValue.keyCrypto.encrypt("Office");
 			properties.put("w2", wp);
 			
 			properties.store(fos, null);
