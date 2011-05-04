@@ -12,13 +12,13 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.PBEParameterSpec;
 
-public class Crypto3 {
+public class Crypto3_backup {
 
 	private Cipher enCipher;
 	private Cipher deCipher;
 	private static String algorithm = "PBEWithMD5AndDES";
 
-	public Crypto3 (String str, byte[] salt, int iterationCount) throws Exception {
+	public Crypto3_backup (String str, byte[] salt, int iterationCount) throws Exception {
 		PBEKeySpec keySpec = new PBEKeySpec(str.toCharArray());
 		SecretKeyFactory keyFactory = SecretKeyFactory.getInstance(algorithm);
 		SecretKey secretKey = keyFactory.generateSecret(keySpec);
@@ -34,63 +34,11 @@ public class Crypto3 {
 	public String encrypt(String str) {
 
 		try {
-			/* 
-			 * tmp dung de luu tam data bi ma hoa, so luong toi
-			 * da la 1024. Sau khi ma hoa, so luong byte thua se
-			 * bi cat di va luu vao result. 
-			 */
-			byte[] tmp = new byte[1024];
-			int pos = 0;
-			
-			/*
-			 * Convert chuoi str sang dang byte
-			 */
 			byte[] input = str.getBytes();
-			
-			/*
-			 * Ma hoa input thanh output
-			 */
 			byte[] output = enCipher.update(input, 0, input.length);
-			
-			/*
-			 * Neu output != null thi copy vao tmp
-			 */
-			if (output != null) {
-				pos = output.length;
-				for (int i = 0; i < pos; i++) {
-					tmp[i] = output[i];
-				}
-			}
-			
-			/*
-			 * Ket thuc ma hoa
-			 */
 			output = enCipher.doFinal();
-			
-			/*
-			 * Neu output != null thi copy vao tmp
-			 */ 
-			if (output != null) {
-				for (int i = 0; i < output.length; i++) {
-					tmp[i+pos] = output[i];
-				}
-				pos+=output.length;
-			}
-			
-			/*
-			 * Copy du lieu tu tmp sang result, xoa het
-			 * nhung byte thua.
-			 */
-			byte[] result = new byte[pos];
-			for (int i = 0; i < pos; i++) {
-				result[i] = tmp[i];
-			}
-			
-			/*
-			 * Ma hoa sang Base64 de co the luu xuong file
-			 */
-			String strBase64 = Base64.encodeToString(result, Base64.DEFAULT);
-			return strBase64;
+			String tmp = new String(output);
+			return tmp;
 		} catch (IllegalBlockSizeException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -103,36 +51,11 @@ public class Crypto3 {
 
 	public String decrypt(String str) {
 
-		String result = "";
 		try {
-			/*
-			 * Giai ma base64 chuoi str, luu vao input
-			 */
-			byte[] input = Base64.decode(str, Base64.DEFAULT);
-			
-			/*
-			 * Giai ma input thanh output
-			 */
+			byte[] input = str.getBytes();
 			byte[] output = deCipher.update(input, 0, input.length);
-			
-			/*
-			 * Neu output != null thi convert sang dang chuoi
-			 */
-			if (output != null) {
-				result += new String(output);
-			}
-			
-			/*
-			 * Ket thuc giai ma
-			 */
-			output = deCipher.doFinal();
-			/*
-			 * Neu output != null thi convert sang dang chuoi
-			 */
-			if (output != null) {
-				result += new String(output);
-			}
-			return result;
+			output = deCipher.doFinal(str.getBytes());
+			return output.toString();
 		} catch (IllegalBlockSizeException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

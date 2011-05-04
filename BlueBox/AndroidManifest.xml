@@ -22,8 +22,12 @@
 		<activity android:name=".view.LoginView" android:label="@+string/LoginView">
 		</activity>
 		
-		<activity android:name=".view.ListOfWorkspaceView" android:label="@+string/WorkspaceView">
+		<activity android:name=".view.WorkspaceListView" android:label="@+string/WorkspaceList">
+		</activity>
+		
+		<activity android:name=".view.WorkspaceDetailView" android:label="@+string/WorkspaceDetail">
 		</activity>
 		
 </application>
+<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"></uses-permission>
 </manifest> 

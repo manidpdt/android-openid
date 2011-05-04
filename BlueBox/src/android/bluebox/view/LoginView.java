@@ -54,7 +54,8 @@ public class LoginView extends Activity {
 					StaticValue.keyCrypto.init(openFileInput(StaticValue.KEY_FILE), StaticValue.passwordCrypto);
 					
 					Toast.makeText(getBaseContext(), "Successful", Toast.LENGTH_LONG).show();
-					Intent iListOfWorkspace = new Intent(LoginView.this, ListOfWorkspaceView.class);
+					Intent iListOfWorkspace = new Intent(LoginView.this, WorkspaceListView.class);
+					finish();
 					startActivity(iListOfWorkspace);
 				} else {
 					Toast.makeText(getBaseContext(), "Unsuccessful", Toast.LENGTH_LONG).show();

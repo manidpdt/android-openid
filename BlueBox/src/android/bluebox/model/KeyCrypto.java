@@ -7,7 +7,6 @@ import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.security.SecureRandom;
-import java.util.Random;
 
 public class KeyCrypto {
 	
@@ -36,10 +35,10 @@ public class KeyCrypto {
 		// generate super secret key and encrypt it by using PasswordCrypto
 		SecureRandom prng = SecureRandom.getInstance("SHA1PRNG");
 		secretKey = new Integer(prng.nextInt()).toString();
-		String encryptedKey = passwordCrypto.encrypt("password");
+		String encryptedKey = passwordCrypto.encrypt(secretKey);
 		String tmp = passwordCrypto.decrypt(encryptedKey);
 		
-		out.write(encryptedKey + "\n");
+		out.write(encryptedKey);
 		
 		// generate salt and iterationCount for crypto
 

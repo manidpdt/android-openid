@@ -24,8 +24,8 @@ public class Main extends Activity{
 //		} else {
 //			intent = new Intent(Main.this, InitPasswordView.class);
 //		}
-		intent = new Intent(Main.this, InitPasswordView.class);
-//		intent = new Intent(Main.this, ListOfWorkspaceView.class);
+//		intent = new Intent(Main.this, InitPasswordView.class);
+		intent = new Intent(Main.this, LoginView.class);
 		startActivityForResult(intent, 0);
 	}
 
