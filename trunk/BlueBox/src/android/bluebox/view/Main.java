@@ -10,7 +10,7 @@ import android.bluebox.model.StaticValue;
 import android.content.Intent;
 import android.os.Bundle;
 
-public class Main extends Activity{
+public class Main extends Activity {
 
 	/** Called when the activity is first created. */
 	@Override
@@ -19,13 +19,13 @@ public class Main extends Activity{
 		setContentView(R.layout.main);
 
 		Intent intent;
-//		if (checkExistedFile()) {
-//			intent = new Intent(Main.this, LoginView.class);
-//		} else {
-//			intent = new Intent(Main.this, InitPasswordView.class);
-//		}
+		if (checkExistedFile()) {
+			intent = new Intent(Main.this, LoginView.class);
+		} else {
+			intent = new Intent(Main.this, InitPasswordView.class);
+		}
 //		intent = new Intent(Main.this, InitPasswordView.class);
-		intent = new Intent(Main.this, LoginView.class);
+//		intent = new Intent(Main.this, LoginView.class);
 		startActivityForResult(intent, 0);
 	}
 

@@ -36,7 +36,7 @@ public class KeyCrypto {
 		SecureRandom prng = SecureRandom.getInstance("SHA1PRNG");
 		secretKey = new Integer(prng.nextInt()).toString();
 		String encryptedKey = passwordCrypto.encrypt(secretKey);
-		String tmp = passwordCrypto.decrypt(encryptedKey);
+//		String tmp = passwordCrypto.decrypt(encryptedKey);
 		
 		out.write(encryptedKey);
 		
