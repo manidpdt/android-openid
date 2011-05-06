@@ -104,11 +104,11 @@ public class InitConfiguration extends Activity {
 			
 			// luu ma md5 cua key de tranh truong hop bi chep de tu may khac
 			
-			properties.put("header", StaticValue.keyCrypto.getMD5Key());
+			properties.setProperty("header", StaticValue.keyCrypto.getMD5Key());
 
 			// So luong workspace hien tai = 2
 			
-			properties.put("n", "0");
+			properties.setProperty("n", "0");
 			
 			properties.store(fos, null);
 			fos.close();
@@ -129,11 +129,11 @@ public class InitConfiguration extends Activity {
 			
 			//luu ma md5 cua key de tranh truong hop bi chep de tu may khac
 			
-			properties.put("header", StaticValue.keyCrypto.getMD5Key());
+			properties.setProperty("header", StaticValue.keyCrypto.getMD5Key());
 			
 			// So luong workspace hien tai = 2
 			
-			properties.put("n", "0");
+			properties.setProperty("n", "0");
 			
 			
 			properties.store(fos, "");
@@ -155,18 +155,18 @@ public class InitConfiguration extends Activity {
 			
 			//luu ma md5 cua key de tranh truong hop bi chep de tu may khac
 			
-			properties.put("header", StaticValue.keyCrypto.getMD5Key());
+			properties.setProperty("header", StaticValue.keyCrypto.getMD5Key());
 			
 			// So luong workspace hien tai = 2
 			
-			properties.put("n", "2");
+			properties.setProperty("n", "2");
 			
 			// Them 1 so default workspace: Home, Office
 			
 			String wp = StaticValue.keyCrypto.encrypt("Vo Minh Huy");
-			properties.put("w1", wp);
+			properties.setProperty("w1", wp);
 			wp = StaticValue.keyCrypto.encrypt("Office");
-			properties.put("w2", wp);
+			properties.setProperty("w2", wp);
 			
 			properties.store(fos, null);
 			

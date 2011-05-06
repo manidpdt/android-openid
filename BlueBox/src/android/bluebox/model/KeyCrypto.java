@@ -11,6 +11,7 @@ import java.security.SecureRandom;
 public class KeyCrypto {
 	
 	private String secretKey;
+	private String header = null;
 	private byte[] salt = new byte[] { 0x7d, 0x60, 0x43, 0x5f, 0x02, (byte) 0xe9, (byte) 0xe0, (byte) 0xae };
 	private int iterationCount = 2020;
 	
@@ -58,6 +59,10 @@ public class KeyCrypto {
 	}
 	
 	public String getMD5Key() {
+//		if (header.equals(null)) {
+//			header = Crypto3.createMD5(secretKey); 
+//		}
+//		return header;
 		return Crypto3.createMD5(secretKey);
 	}
 

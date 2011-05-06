@@ -55,7 +55,12 @@ public class WorkspaceListView extends Activity {
 	    switch (item.getItemId()) {
 	        case R.id.wsl_new_ws:
 	        	Intent iWorkspaceDetail = new Intent(WorkspaceListView.this, WorkspaceDetailView.class);
-	        	startActivity(iWorkspaceDetail);
+	        	
+	        	/*
+	        	 * 0:	new Workspace
+	        	 * 1:	load existed workspace
+	        	 */
+	        	startActivityForResult(iWorkspaceDetail, 0);
 	        	break;
 	        case R.id.wsl_setting:     Toast.makeText(this, "You pressed Setting!", Toast.LENGTH_LONG).show();
 	                            break;
@@ -91,6 +96,8 @@ public class WorkspaceListView extends Activity {
 					list.add(wi);
 				}
 			}
+			
+			fis.close();
 
 			return list;
 
