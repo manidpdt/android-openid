@@ -6,7 +6,7 @@ import android.app.Activity;
 import android.bluebox.R;
 import android.bluebox.model.KeyCrypto;
 import android.bluebox.model.PasswordCrypto;
-import android.bluebox.model.StaticValue;
+import android.bluebox.model.StaticBox;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -41,17 +41,17 @@ public class LoginView extends Activity {
 		@Override
 		public void onClick(View arg0) {
 			try {
-				StaticValue.passwordCrypto = new PasswordCrypto();
-				StaticValue.passwordCrypto.readFile(openFileInput(StaticValue.PWD_MD5));
+				StaticBox.passwordCrypto = new PasswordCrypto();
+				StaticBox.passwordCrypto.readFile(openFileInput(StaticBox.PWD_MD5));
 				String pwd = edtPassword.getText().toString();
-				boolean login = StaticValue.passwordCrypto.checkPassword(pwd);
+				boolean login = StaticBox.passwordCrypto.checkPassword(pwd);
 				
 				if (login) {
 					
-					StaticValue.passwordCrypto.setPassword(pwd);
+					StaticBox.passwordCrypto.setPassword(pwd);
 					
-					StaticValue.keyCrypto = new KeyCrypto();
-					StaticValue.keyCrypto.init(openFileInput(StaticValue.KEY_FILE), StaticValue.passwordCrypto);
+					StaticBox.keyCrypto = new KeyCrypto();
+					StaticBox.keyCrypto.init(openFileInput(StaticBox.KEY_FILE), StaticBox.passwordCrypto);
 					
 					Toast.makeText(getBaseContext(), "Successful", Toast.LENGTH_LONG).show();
 					Intent intent = new Intent(LoginView.this, WorkspaceListView.class);

@@ -2,12 +2,11 @@
  * http://geekswithblogs.net/bosuch/archive/2011/01/31/android---create-a-custom-multi-line-listview-bound-to-an.aspx
  */
 
-package android.bluebox.view;
+package android.bluebox.model;
 
 import java.util.ArrayList;
 
 import android.bluebox.R;
-import android.bluebox.model.WorkspaceItem;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -74,5 +73,9 @@ public class CustomBaseAdapter extends BaseAdapter {
 		TextView txtName;
 		TextView txtAccuracy;
 		TextView txtLastVisit;
+	}
+	
+	public void setArraylist(ArrayList<WorkspaceItem> list) {
+		workspaceList = list;
 	}
 }

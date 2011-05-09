@@ -2,9 +2,12 @@ package android.bluebox.model;
 
 public class WorkspaceItem {
 	
+	private int id;
 	private String name = "";
 	private String accuracy = "";
 	private String lastVisit = "";
+	
+	private String encryptedName = "";
 	
 	public void setName(String name) {
 		this.name = name;
@@ -28,5 +31,21 @@ public class WorkspaceItem {
 	
 	public String getLastVisit() {
 		return lastVisit;
+	}
+	
+	public void setId(int id) {
+		this.id = id;
+	}
+	
+	public int getId() {
+		return id;
+	}
+	
+	public void setEncryptedName(String encryptedName) {
+		this.encryptedName = encryptedName;
+	}
+	
+	public String getEncryptedName() {
+		return encryptedName;
 	}
 }

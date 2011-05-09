@@ -14,7 +14,7 @@ import java.util.Properties;
 
 import android.app.Activity;
 import android.bluebox.R;
-import android.bluebox.model.StaticValue;
+import android.bluebox.model.StaticBox;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
@@ -170,7 +170,7 @@ public class WorkspaceDetailView extends Activity {
 				Toast.makeText(getBaseContext(), "Enter name of workspace", Toast.LENGTH_LONG).show();
 				return;
 			}
-			String newWorkspaceName = StaticValue.keyCrypto.encrypt(edtName.getText().toString());
+			String newWorkspaceName = StaticBox.keyCrypto.encrypt(edtName.getText().toString());
 			
 			/*
 			 * Neu tao workspace moi ma da co roi thi bao loi
@@ -183,7 +183,7 @@ public class WorkspaceDetailView extends Activity {
 				}
 			}
 			try {
-				FileInputStream fis = openFileInput(StaticValue.WORKSPACE_FILE);
+				FileInputStream fis = openFileInput(StaticBox.WORKSPACE_FILE);
 
 				Properties properties = new Properties();
 				properties.load(fis);
@@ -193,10 +193,9 @@ public class WorkspaceDetailView extends Activity {
 				Properties properties2 = new Properties();
 				properties2.putAll(properties);
 
-				FileOutputStream fos = openFileOutput("testproperties", Context.MODE_PRIVATE);
+				FileOutputStream fos = openFileOutput(StaticBox.WORKSPACE_FILE, Context.MODE_PRIVATE);
 
 				int n = Integer.valueOf(properties2.getProperty("n"));
-				properties2.remove("n");
 				properties2.setProperty("n", String.valueOf(++n));
 				properties2.setProperty("w" + n, newWorkspaceName);
 
@@ -205,12 +204,12 @@ public class WorkspaceDetailView extends Activity {
 				fos.flush();
 				fos.close();
 
-				fos = openFileOutput(newWorkspaceName, Context.MODE_PRIVATE);
+				fos = openFileOutput(newWorkspaceName.trim(), Context.MODE_PRIVATE);
 				properties = new Properties();
 
-				properties.setProperty("header", StaticValue.keyCrypto.getMD5Key());
-				properties.setProperty("network", StaticValue.keyCrypto.encrypt(hostIP + ":" + hostPort));
-				properties.setProperty("gps", StaticValue.keyCrypto.encrypt(strLattitude + ":" + strLongitude));
+				properties.setProperty("header", StaticBox.keyCrypto.getMD5Key());
+				properties.setProperty("network", StaticBox.keyCrypto.encrypt(hostIP + ":" + hostPort));
+				properties.setProperty("gps", StaticBox.keyCrypto.encrypt(strLattitude + ":" + strLongitude));
 
 				properties.store(fos, null);
 

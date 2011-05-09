@@ -6,7 +6,7 @@ import java.io.IOException;
 
 import android.app.Activity;
 import android.bluebox.R;
-import android.bluebox.model.StaticValue;
+import android.bluebox.model.StaticBox;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -33,7 +33,7 @@ public class Main extends Activity {
 	public boolean checkExistedFile() {
 		FileInputStream fis;
 		try {
-			fis = openFileInput(StaticValue.PWD_MD5);
+			fis = openFileInput(StaticBox.PWD_MD5);
 			fis.close();
 		} catch (FileNotFoundException e) {
 			return false;
