@@ -1,0 +1,13 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+	<item android:id="@+id/idl_refresh" android:title="Refresh" />
+	<item android:id="@+id/idl_change" android:title="Change">
+		<!-- "New" submenu -->
+		<menu>
+			<item android:id="@+id/idl_change_ws" android:title="Workspace" />
+			<item android:id="@+id/idl_change_tag" android:title="Tag" />
+		</menu>
+	</item>
+	<item android:id="@+id/idl_new_id" android:title="New Identity" />
+	<item android:id="@+id/idl_setting" android:title="Setting" />
+	<item android:id="@+id/idl_exit" android:title="Exit" />
+</menu>

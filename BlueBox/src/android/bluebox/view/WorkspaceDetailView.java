@@ -24,12 +24,10 @@ import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.AdapterView.OnItemClickListener;
 
 public class WorkspaceDetailView extends Activity {
 
@@ -143,7 +141,7 @@ public class WorkspaceDetailView extends Activity {
 				String message = (String) ois.readObject();
 
 				txtNetwork.setText(hostIP + ":" + hostPort);
-				Toast.makeText(getBaseContext(), message, Toast.LENGTH_LONG).show();
+				Toast.makeText(getBaseContext(), message, Toast.LENGTH_SHORT).show();
 
 				ois.close();
 				oos.close();
@@ -204,7 +202,7 @@ public class WorkspaceDetailView extends Activity {
 				fos.flush();
 				fos.close();
 
-				fos = openFileOutput(newWorkspaceName.trim(), Context.MODE_PRIVATE);
+				fos = openFileOutput("w" + newWorkspaceName.trim(), Context.MODE_PRIVATE);
 				properties = new Properties();
 
 				properties.setProperty("header", StaticBox.keyCrypto.getMD5Key());
@@ -226,7 +224,6 @@ public class WorkspaceDetailView extends Activity {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			//			}
 
 		}
 	};

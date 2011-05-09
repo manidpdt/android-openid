@@ -13,8 +13,6 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 public class InitConfiguration extends Activity {
-//	public PasswordCrypto passwordCrypto;
-//	public KeyCrypto keyCrypto;
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);

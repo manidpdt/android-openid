@@ -8,7 +8,6 @@ package android.bluebox.view;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Properties;
@@ -19,7 +18,6 @@ import android.bluebox.R;
 import android.bluebox.model.CustomBaseAdapter;
 import android.bluebox.model.StaticBox;
 import android.bluebox.model.WorkspaceItem;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
@@ -91,8 +89,10 @@ public class WorkspaceListView extends Activity {
 					 * Connect
 					 */
 					case 0:
+						String netInfos = StaticBox.keyCrypto.decrypt(wsItem.getAccuracy()).trim();
+						String[] netInfo = netInfos.split(":");
+						Toast.makeText(getBaseContext(), String.valueOf(StaticBox.connectToHost(netInfo[0], Integer.parseInt(netInfo[1]))), Toast.LENGTH_SHORT).show();
 						break;
-						
 					/*
 					 * Edit
 					 */
@@ -133,7 +133,7 @@ public class WorkspaceListView extends Activity {
 							 * Delete workspace file
 							 */
 							File file = null;
-							file = new File(wsItem.getEncryptedName().trim());
+							file = new File("w" + wsItem.getEncryptedName().trim());
 							String s = StaticBox.keyCrypto.decrypt(wsItem.getEncryptedName());
 							Toast.makeText(getBaseContext(), String.valueOf(file.exists()), Toast.LENGTH_SHORT).show();
 							
@@ -175,6 +175,14 @@ public class WorkspaceListView extends Activity {
 		case R.id.wsl_refresh:
 			refreshWorkspaceList();
 			break;
+			
+		/*
+		 * Case change to identity list
+		 */
+		case R.id.wsl_change_id:
+			Intent intent = new Intent(WorkspaceListView.this, IdentityListView.class);
+			startActivity(intent);
+			break;
 		/*
 		 * Create new workspace
 		 */
@@ -186,7 +194,6 @@ public class WorkspaceListView extends Activity {
 			 */
 			startActivityForResult(iWorkspaceDetail, 0);
 			break;
-			
 		case R.id.wsl_setting:     Toast.makeText(this, "You pressed Setting!", Toast.LENGTH_LONG).show();
 		break;
 		case R.id.wsl_exit: Toast.makeText(this, "You pressed the Exit!", Toast.LENGTH_LONG).show();
@@ -214,7 +221,7 @@ public class WorkspaceListView extends Activity {
 				String ws = properties.getProperty("w" + i).trim();
 				if (ws != null) {
 					
-					FileInputStream fis2 = openFileInput(ws);
+					FileInputStream fis2 = openFileInput("w" + ws);
 					Properties properties2 = new Properties();
 					properties2.load(fis2);
 					fis2.close();
@@ -242,7 +249,7 @@ public class WorkspaceListView extends Activity {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return null;
+		return list;
 	}
 	
 	public void refreshWorkspaceList() {
