@@ -1,7 +1,7 @@
 package android.bluebox.model;
 
 
-public class StaticValue {
+public class StaticBox {
 	public static final String PWD_MD5 = "bluebox.pwdmd5";
 	public static final String PROPERTIES_FILE ="bluebox.properties";
 	public static final String KEY_FILE = "bluebox.key";

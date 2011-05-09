@@ -28,15 +28,15 @@ public class InitConfiguration extends Activity {
 
 	public void initConfig(String pwd, String remind) {
 
-		StaticValue.passwordCrypto = new PasswordCrypto();
-		StaticValue.keyCrypto = new KeyCrypto();
+		StaticBox.passwordCrypto = new PasswordCrypto();
+		StaticBox.keyCrypto = new KeyCrypto();
 		
 		createPwdMD5(pwd);
 		createRemindFile(remind);
 		createKeyFile(pwd);
 		try {
-			FileInputStream fis = openFileInput(StaticValue.KEY_FILE); 
-			StaticValue.keyCrypto.init(fis, StaticValue.passwordCrypto);
+			FileInputStream fis = openFileInput(StaticBox.KEY_FILE); 
+			StaticBox.keyCrypto.init(fis, StaticBox.passwordCrypto);
 			fis.close();
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
@@ -53,8 +53,8 @@ public class InitConfiguration extends Activity {
 	// Ma hoa chuoi pwd theo md5
 	public void createPwdMD5(String pwd) {
 		try {
-			FileOutputStream fos = openFileOutput(StaticValue.PWD_MD5, Context.MODE_PRIVATE);
-			StaticValue.passwordCrypto.initFile(fos, pwd);
+			FileOutputStream fos = openFileOutput(StaticBox.PWD_MD5, Context.MODE_PRIVATE);
+			StaticBox.passwordCrypto.initFile(fos, pwd);
 			fos.close();
 		} catch (FileNotFoundException e) {
 			System.err.println("Can not create pwd_md5");
@@ -68,7 +68,7 @@ public class InitConfiguration extends Activity {
 	// tao file goi y password cho nguoi dung
 	public void createRemindFile(String remind) {
 		try {
-			FileOutputStream fos = openFileOutput(StaticValue.PROPERTIES_FILE, Context.MODE_PRIVATE);
+			FileOutputStream fos = openFileOutput(StaticBox.PROPERTIES_FILE, Context.MODE_PRIVATE);
 			OutputStreamWriter out = new OutputStreamWriter(fos);
 			out.write(remind);
 			out.close();
@@ -83,8 +83,8 @@ public class InitConfiguration extends Activity {
 	// tao key
 	public void createKeyFile(String pwd) {
 		try {
-			FileOutputStream fos = openFileOutput(StaticValue.KEY_FILE, Context.MODE_PRIVATE);
-			StaticValue.keyCrypto.initFile(fos, StaticValue.passwordCrypto);
+			FileOutputStream fos = openFileOutput(StaticBox.KEY_FILE, Context.MODE_PRIVATE);
+			StaticBox.keyCrypto.initFile(fos, StaticBox.passwordCrypto);
 			fos.close();
 		} catch (FileNotFoundException e) {
 		} catch (IOException e) {
@@ -99,12 +99,12 @@ public class InitConfiguration extends Activity {
 	
 	public void createTagFile() {
 		try {
-			FileOutputStream fos = openFileOutput(StaticValue.TAG_FILE, Context.MODE_PRIVATE);
+			FileOutputStream fos = openFileOutput(StaticBox.TAG_FILE, Context.MODE_PRIVATE);
 			Properties properties = new Properties();
 			
 			// luu ma md5 cua key de tranh truong hop bi chep de tu may khac
 			
-			properties.setProperty("header", StaticValue.keyCrypto.getMD5Key());
+			properties.setProperty("header", StaticBox.keyCrypto.getMD5Key());
 
 			// So luong workspace hien tai = 2
 			
@@ -124,12 +124,12 @@ public class InitConfiguration extends Activity {
 	
 	public void createSemanticFile() {
 		try {
-			FileOutputStream fos = openFileOutput(StaticValue.SEMANTIC_FILE, Context.MODE_PRIVATE);
+			FileOutputStream fos = openFileOutput(StaticBox.SEMANTIC_FILE, Context.MODE_PRIVATE);
 			Properties properties = new Properties();
 			
 			//luu ma md5 cua key de tranh truong hop bi chep de tu may khac
 			
-			properties.setProperty("header", StaticValue.keyCrypto.getMD5Key());
+			properties.setProperty("header", StaticBox.keyCrypto.getMD5Key());
 			
 			// So luong workspace hien tai = 2
 			
@@ -150,23 +150,16 @@ public class InitConfiguration extends Activity {
 	
 	public void createWorkspaceFile() {
 		try {
-			FileOutputStream fos = openFileOutput(StaticValue.WORKSPACE_FILE, Context.MODE_PRIVATE);
+			FileOutputStream fos = openFileOutput(StaticBox.WORKSPACE_FILE, Context.MODE_PRIVATE);
 			Properties properties = new Properties();
 			
 			//luu ma md5 cua key de tranh truong hop bi chep de tu may khac
 			
-			properties.setProperty("header", StaticValue.keyCrypto.getMD5Key());
+			properties.setProperty("header", StaticBox.keyCrypto.getMD5Key());
 			
-			// So luong workspace hien tai = 2
+			// So luong workspace hien tai = 0
 			
-			properties.setProperty("n", "2");
-			
-			// Them 1 so default workspace: Home, Office
-			
-			String wp = StaticValue.keyCrypto.encrypt("Vo Minh Huy");
-			properties.setProperty("w1", wp);
-			wp = StaticValue.keyCrypto.encrypt("Office");
-			properties.setProperty("w2", wp);
+			properties.setProperty("n", "0");
 			
 			properties.store(fos, null);
 			
