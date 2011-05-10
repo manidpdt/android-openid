@@ -169,7 +169,7 @@ public class IdentityListView extends ListActivity {
 			fos = openFileOutput("s" + encryptedName, Context.MODE_PRIVATE);
 			Properties properties2 = new Properties();
 			properties2.setProperty("n", "0");
-			properties.store(fos, null);
+			properties2.store(fos, null);
 			fos.flush();
 			fos.close();
 		} catch (FileNotFoundException e) {
