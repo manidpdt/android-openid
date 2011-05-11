@@ -45,7 +45,7 @@ public class SemanticListView extends ListActivity {
 
 		loadIdentity();
 
-		lvIdentity = getListView();
+		lvIdentity = this.getListView();
 		lvIdentity.setTextFilterEnabled(true);
 		lvIdentity.setOnItemClickListener(clickItem);
 	}
@@ -64,8 +64,8 @@ public class SemanticListView extends ListActivity {
 
 			for (int i = 1; i <= numberOfIdentity; i++) {
 				String se = properties.getProperty("s" + i);
-				se = StaticBox.keyCrypto.decrypt(se);
 				if (se != null) {
+					se = StaticBox.keyCrypto.decrypt(se);
 					list.add(se);
 				}
 			}		
