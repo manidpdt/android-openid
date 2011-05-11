@@ -1,6 +1,5 @@
 package android.bluebox.view;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -16,11 +15,9 @@ import android.app.Activity;
 import android.bluebox.R;
 import android.bluebox.model.StaticBox;
 import android.content.Context;
-import android.content.Intent;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -31,9 +28,10 @@ import android.widget.Toast;
 
 public class WorkspaceDetailView extends Activity {
 
-	boolean isNewWorkspace = false;
-
-	WifiManager wifi;
+	static int NEW_WORKSPACE = 0;
+	static int EDIT_WORKSPACE = 1;
+	
+	String workspaceName = "null";
 
 	LocationManager mlocManager = null;
 	LocationListener mlocListener = null;
@@ -60,6 +58,10 @@ public class WorkspaceDetailView extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.workspacedetail);
 
+		/*
+		 * Check if we create a new workspace or edit one
+		 */
+		
 		edtName = (EditText) findViewById(R.id.wsd_edt_name);
 		edtName.setText("");
 
@@ -79,7 +81,32 @@ public class WorkspaceDetailView extends Activity {
 
 		btnCancel = (Button) findViewById(R.id.wsd_btn_canel);
 		btnCancel.setOnClickListener(cancel);
-
+		
+		/*
+		 * Load data if editing
+		 */
+		workspaceName = this.getIntent().getExtras().getString("WorkspaceName");
+		
+		if (workspaceName != "null") {
+			
+			try {
+				FileInputStream fis = openFileInput("w" + workspaceName);
+				Properties properties = new Properties();
+				properties.load(fis);
+				fis.close();
+				
+				edtName.setText(StaticBox.keyCrypto.decrypt(workspaceName));
+				txtNetwork.setText(StaticBox.keyCrypto.decrypt(properties.getProperty("network")));
+				txtLocation.setText(StaticBox.keyCrypto.decrypt(properties.getProperty("gps")));
+				
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 
 	public void initGPS() {
@@ -171,44 +198,48 @@ public class WorkspaceDetailView extends Activity {
 			String newWorkspaceName = StaticBox.keyCrypto.encrypt(edtName.getText().toString());
 			
 			/*
-			 * Neu tao workspace moi ma da co roi thi bao loi
+			 * Neu tao workspace moi ma da co roi thi bao loi va ngung lai
 			 */
-			if (isNewWorkspace) {
-				File newWorkspaceFile = new File(newWorkspaceName);
-				if (newWorkspaceFile.exists()) {
-					Toast.makeText(getBaseContext(), "This workspace name existed", Toast.LENGTH_LONG).show();
+			if (workspaceName.equals("null")) {
+				try {
+					FileInputStream fis = openFileInput("w" + newWorkspaceName);
+					if (fis != null) fis.close();
+					Toast.makeText(getBaseContext(), "This workspace name existed", Toast.LENGTH_SHORT).show();
 					return;
+				} catch (FileNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
 			}
+			
+			/*
+			 * Tao file moi
+			 */
 			try {
 				FileInputStream fis = openFileInput(StaticBox.WORKSPACE_FILE);
-
 				Properties properties = new Properties();
 				properties.load(fis);
-
 				fis.close();
-
-				Properties properties2 = new Properties();
-				properties2.putAll(properties);
 
 				FileOutputStream fos = openFileOutput(StaticBox.WORKSPACE_FILE, Context.MODE_PRIVATE);
 
-				int n = Integer.valueOf(properties2.getProperty("n"));
-				properties2.setProperty("n", String.valueOf(++n));
-				properties2.setProperty("w" + n, newWorkspaceName);
-
-				properties2.store(fos, null);
+				int n = Integer.valueOf(properties.getProperty("n"));
+				properties.setProperty("n", String.valueOf(++n));
+				properties.setProperty("w" + n, newWorkspaceName);
+				properties.store(fos, null);
 
 				fos.flush();
 				fos.close();
 
 				fos = openFileOutput("w" + newWorkspaceName.trim(), Context.MODE_PRIVATE);
+				
 				properties = new Properties();
-
 				properties.setProperty("header", StaticBox.keyCrypto.getMD5Key());
 				properties.setProperty("network", StaticBox.keyCrypto.encrypt(hostIP + ":" + hostPort));
 				properties.setProperty("gps", StaticBox.keyCrypto.encrypt(strLattitude + ":" + strLongitude));
-
 				properties.store(fos, null);
 
 				fos.flush();
@@ -224,7 +255,6 @@ public class WorkspaceDetailView extends Activity {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-
 		}
 	};
 
@@ -236,10 +266,4 @@ public class WorkspaceDetailView extends Activity {
 			finish();
 		}
 	};
-
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if (requestCode == 0) {
-			isNewWorkspace = true;
-		}
-	}
 }

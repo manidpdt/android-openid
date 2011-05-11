@@ -56,9 +56,9 @@ public class LoginView extends Activity {
 					Toast.makeText(getBaseContext(), "Successful", Toast.LENGTH_LONG).show();
 //					Intent intent = new Intent(LoginView.this, WorkspaceListView.class);
 //					Intent intent = new Intent(LoginView.this, WorkspaceDetailView.class);
-					Intent intent = new Intent(LoginView.this, IdentityListView.class);
-					finish();
+					Intent intent = new Intent(LoginView.this, SemanticListView.class);
 					startActivity(intent);
+					finish();
 				} else {
 					Toast.makeText(getBaseContext(), "Unsuccessful", Toast.LENGTH_LONG).show();
 				}
