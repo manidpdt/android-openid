@@ -21,8 +21,6 @@ public class LoginView extends Activity {
 	Button btnLogin;
 	Button btnClear;
 	
-//	PasswordCrypto passwordCrypto;
-	
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.login);
@@ -55,8 +53,8 @@ public class LoginView extends Activity {
 					
 					Toast.makeText(getBaseContext(), "Successful", Toast.LENGTH_LONG).show();
 //					Intent intent = new Intent(LoginView.this, WorkspaceListView.class);
-//					Intent intent = new Intent(LoginView.this, WorkspaceDetailView.class);
 					Intent intent = new Intent(LoginView.this, SemanticListView.class);
+//					Intent intent = new Intent(LoginView.this, TagListView.class);
 					startActivity(intent);
 					finish();
 				} else {

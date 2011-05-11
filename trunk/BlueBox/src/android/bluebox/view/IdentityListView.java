@@ -41,7 +41,7 @@ public class IdentityListView extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.identitydetail);
 
-		String name = this.getIntent().getExtras().getString("idName"); 
+		String name = this.getIntent().getExtras().getString("idName");
 		encryptedIdName = StaticBox.keyCrypto.encrypt(name);
 
 		lvIdentityDetail = (ListView) findViewById(R.id.ListOfIdentity);
@@ -107,63 +107,70 @@ public class IdentityListView extends Activity {
 	OnItemClickListener clickItem = new OnItemClickListener() {
 
 		@Override
-		public void onItemClick(AdapterView<?> a, View v, int position,
-				long id) {
+		public void onItemClick(AdapterView<?> a, View v, int position, long id) {
 			// TODO Auto-generated method stub
-			final IdentityItem idItem = (IdentityItem) lvIdentityDetail.getItemAtPosition(position);
-			Toast.makeText(IdentityListView.this, "You have chosen: " + " " + idItem.getName(), Toast.LENGTH_SHORT).show();
+			final IdentityItem idItem = (IdentityItem) lvIdentityDetail
+					.getItemAtPosition(position);
+			Toast.makeText(IdentityListView.this,
+					"You have chosen: " + " " + idItem.getName(),
+					Toast.LENGTH_SHORT).show();
 
 			/*
 			 * Create list of option: Connect, Edit, Delete
 			 */
-			final CharSequence[] idOption = {"Connect", "Edit Value", "Edit Tag", "Edit Workspace", "Delete"};
+			final CharSequence[] idOption = { "Connect", "Edit Value",
+					"Edit Tag", "Edit Workspace", "Delete" };
 
 			/*
 			 * Create dialog
 			 */
-			AlertDialog.Builder builder = new AlertDialog.Builder(IdentityListView.this);
+			AlertDialog.Builder builder = new AlertDialog.Builder(
+					IdentityListView.this);
 			builder.setTitle(idItem.getName() + " Options");
 			builder.setItems(idOption, new OnClickListener() {
 
 				@Override
 				public void onClick(DialogInterface dialog, int item) {
 					// TODO Auto-generated method stub
-					Toast.makeText(getBaseContext(), idOption[item], Toast.LENGTH_SHORT).show();
-					
+					Toast.makeText(getBaseContext(), idOption[item],
+							Toast.LENGTH_SHORT).show();
+
 					Intent intent;
-					
+
 					switch (item) {
 					/*
 					 * Connect
 					 */
 					case 0:
-						
+
 						break;
 
-						/* 
-						 * Edit Value
-						 */
+					/*
+					 * Edit Value
+					 */
 					case 1:
 						editIdentityValue(idItem.getId(), idItem.getName());
 						break;
-						/*
-						 * Edit Tag
-						 */
+					/*
+					 * Edit Tag
+					 */
 					case 2:
-						intent = new Intent(IdentityListView.this, IdentityTagListView.class);
+						intent = new Intent(IdentityListView.this,
+								IdentityTagListView.class);
 						Bundle b = new Bundle();
 
 						intent.putExtra("encryptedIdName", encryptedIdName);
 						intent.putExtra("id", String.valueOf(idItem.getId()));
 						startActivityForResult(intent, 1);
-						
+
 						break;
 
-						/*
-						 * Edit Workspace
-						 */
+					/*
+					 * Edit Workspace
+					 */
 					case 3:
-						intent = new Intent(IdentityListView.this, IdentityWorkspaceListView.class);
+						intent = new Intent(IdentityListView.this,
+								IdentityWorkspaceListView.class);
 
 						intent.putExtra("encryptedIdName", encryptedIdName);
 						intent.putExtra("id", String.valueOf(idItem.getId()));
@@ -171,9 +178,9 @@ public class IdentityListView extends Activity {
 
 						break;
 
-						/*
-						 * Delete
-						 */
+					/*
+					 * Delete
+					 */
 					case 4:
 						break;
 					}
@@ -211,97 +218,114 @@ public class IdentityListView extends Activity {
 			final EditText edtName = new EditText(this);
 			alert.setView(edtName);
 
-			alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+			alert.setPositiveButton("Ok",
+					new DialogInterface.OnClickListener() {
 
-				@Override
-				public void onClick(DialogInterface dialog, int button) {
-					// TODO Auto-generated method stub
-					String newIdentityValue = edtName.getText().toString().trim(); 
-					if (newIdentityValue.length() > 0) {
-						try {
-							FileInputStream fis = openFileInput("s" + encryptedIdName);
-							Properties properties = new Properties();
-							properties.load(fis);
-							fis.close();
+						@Override
+						public void onClick(DialogInterface dialog, int button) {
+							// TODO Auto-generated method stub
+							String newIdentityValue = edtName.getText()
+									.toString().trim();
+							if (newIdentityValue.length() > 0) {
+								try {
+									FileInputStream fis = openFileInput("s"
+											+ encryptedIdName);
+									Properties properties = new Properties();
+									properties.load(fis);
+									fis.close();
 
-							numberOfId = Integer.parseInt(properties.getProperty("n"));
-							properties.setProperty("n", String.valueOf(++numberOfId));
-							properties.setProperty("i" + numberOfId, StaticBox.keyCrypto.encrypt(newIdentityValue));
-							properties.setProperty("t" + numberOfId, StaticBox.keyCrypto.encrypt(""));
-							properties.setProperty("w" + numberOfId, StaticBox.keyCrypto.encrypt(""));
+									numberOfId = Integer.parseInt(properties
+											.getProperty("n"));
+									properties.setProperty("n",
+											String.valueOf(++numberOfId));
+									properties.setProperty("i" + numberOfId,
+											StaticBox.keyCrypto
+													.encrypt(newIdentityValue));
+									properties.setProperty("t" + numberOfId,
+											StaticBox.keyCrypto.encrypt("default, top"));
+									properties.setProperty("w" + numberOfId,
+											StaticBox.keyCrypto.encrypt(""));
 
-							FileOutputStream fos = openFileOutput("s" + encryptedIdName, Context.MODE_PRIVATE);
-							properties.store(fos, null);
-							fos.flush();
-							fos.close();
-							Toast.makeText(getBaseContext(), "Identity created", Toast.LENGTH_SHORT).show();
-							refreshIdentityList();
-						} catch (FileNotFoundException e) {
-						} catch (IOException e) {
-							e.printStackTrace();
+									FileOutputStream fos = openFileOutput("s"
+											+ encryptedIdName,
+											Context.MODE_PRIVATE);
+									properties.store(fos, null);
+									fos.flush();
+									fos.close();
+									Toast.makeText(getBaseContext(),
+											"Identity created",
+											Toast.LENGTH_SHORT).show();
+									refreshIdentityList();
+								} catch (FileNotFoundException e) {
+								} catch (IOException e) {
+									e.printStackTrace();
+								}
+							} else {
+								Toast.makeText(getBaseContext(),
+										"Fail create identity",
+										Toast.LENGTH_SHORT).show();
+							}
 						}
-					} else {
-						Toast.makeText(getBaseContext(), "Fail create identity", Toast.LENGTH_SHORT).show();
-					}
-				}
-			});
+					});
 
-			alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+			alert.setNegativeButton("Cancel",
+					new DialogInterface.OnClickListener() {
 
-				@Override
-				public void onClick(DialogInterface dialog, int button) {
-					// TODO Auto-generated method stub
-				}
-			});
+						@Override
+						public void onClick(DialogInterface dialog, int button) {
+							// TODO Auto-generated method stub
+						}
+					});
 			alert.show();
 		}
 
 		return true;
 	}
-	
+
 	public void refreshIdentityList() {
 		idList = loadIdentityDetail();
 		cba.setArraylist(idList);
 		cba.notifyDataSetChanged();
 	}
-	
+
 	protected void onResume() {
 		super.onResume();
 		refreshIdentityList();
 	}
-	
+
 	public void changeIdentityValue(int id, String newValue) {
-	
+
 		String encryptNewName = StaticBox.keyCrypto.encrypt(newValue);
-		
+
 		try {
 			FileInputStream fis = openFileInput("s" + encryptedIdName);
 			Properties properties = new Properties();
 			properties.load(fis);
 			fis.close();
-			
+
 			/*
 			 * Find and change value of identity in identity file
 			 */
-			
+
 			properties.setProperty("i" + id, encryptNewName);
-			
-			FileOutputStream fos = openFileOutput("s" + encryptedIdName, Context.MODE_PRIVATE);
+
+			FileOutputStream fos = openFileOutput("s" + encryptedIdName,
+					Context.MODE_PRIVATE);
 			properties.store(fos, null);
 			fos.close();
-			
-		}catch (FileNotFoundException e) {
+
+		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		refreshIdentityList();
-				
+
 	}
-	
+
 	public void editIdentityValue(final int id, final String strName) {
 		AlertDialog.Builder alert = new AlertDialog.Builder(this);
 		alert.setTitle("Edit Identity Value");
@@ -311,30 +335,35 @@ public class IdentityListView extends Activity {
 		final EditText edtName = new EditText(this);
 		edtName.setText("");
 		alert.setView(edtName);
-		//	alert.setView(edtName);
+		// alert.setView(edtName);
 
-		alert.setPositiveButton("Change", new DialogInterface.OnClickListener() {
+		alert.setPositiveButton("Change",
+				new DialogInterface.OnClickListener() {
 
-			@Override
-			public void onClick(DialogInterface dialog, int button) {
-				// TODO Auto-generated method stub
-				String newIdentityValue = edtName.getText().toString().trim(); 
-				if (newIdentityValue.length() > 0) {
-					changeIdentityValue(id, newIdentityValue);
-					refreshIdentityList();
-				} else {
-					Toast.makeText(getBaseContext(), "Fail create identity", Toast.LENGTH_SHORT).show();
-				}
-			}
-		});
+					@Override
+					public void onClick(DialogInterface dialog, int button) {
+						// TODO Auto-generated method stub
+						String newIdentityValue = edtName.getText().toString()
+								.trim();
+						if (newIdentityValue.length() > 0) {
+							changeIdentityValue(id, newIdentityValue);
+							refreshIdentityList();
+						} else {
+							Toast.makeText(getBaseContext(),
+									"Fail create identity", Toast.LENGTH_SHORT)
+									.show();
+						}
+					}
+				});
 
-		alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+		alert.setNegativeButton("Cancel",
+				new DialogInterface.OnClickListener() {
 
-			@Override
-			public void onClick(DialogInterface dialog, int button) {
-				// TODO Auto-generated method stub
-			}
-		});
+					@Override
+					public void onClick(DialogInterface dialog, int button) {
+						// TODO Auto-generated method stub
+					}
+				});
 		alert.show();
 	}
 }
