@@ -22,11 +22,11 @@
 		
 		<activity android:name=".view.WorkspaceDetailView" android:label="@+string/WorkspaceDetail"></activity>
 		
+		<activity android:name=".view.SemanticListView" android:label="@+string/SemanticListView"></activity>
+		
 		<activity android:name=".view.IdentityListView" android:label="@+string/IdentityListView"></activity>
 		
-		<activity android:name=".view.IdentityDetailView" android:label="@+string/IdentityDetailView"></activity>
-		
-		<activity android:name=".view.IdentityValueView" android:label="@+string/IdentityValueView"></activity>
+		<activity android:name=".view.IdentityTagListView" android:label="@+string/IdentityTagListView"></activity>
 		
 </application>
 <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
