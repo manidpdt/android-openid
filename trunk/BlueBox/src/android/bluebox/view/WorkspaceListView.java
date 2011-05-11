@@ -35,11 +35,11 @@ import android.widget.Toast;
 public class WorkspaceListView extends Activity {
 
 	final boolean IS_NEW_WORKSPACE = true;
-	
+
 	ListView lvWorkspace;
 	ArrayList<WorkspaceItem> workspaceList;
 	CustomBaseAdapter cba;
-	
+
 	int numberOfWorkspaces;
 
 	public void onCreate(Bundle savedInstanceState) {
@@ -56,7 +56,7 @@ public class WorkspaceListView extends Activity {
 		workspaceList = loadWorkspace();
 		cba = new CustomBaseAdapter(this, workspaceList);
 		lvWorkspace.setAdapter(cba);
-		
+
 	}
 
 	/*
@@ -68,7 +68,7 @@ public class WorkspaceListView extends Activity {
 		public void onItemClick(AdapterView<?> a, View v, int position,
 				long id) {
 			// TODO Auto-generated method stub
-			
+
 			/*
 			 * Get clicked item
 			 */
@@ -92,7 +92,7 @@ public class WorkspaceListView extends Activity {
 					// TODO Auto-generated method stub
 					Toast.makeText(getBaseContext(), workspaceOption[item], Toast.LENGTH_SHORT).show();
 					switch (item) {
-					
+
 					/*
 					 * Connect
 					 */
@@ -101,45 +101,45 @@ public class WorkspaceListView extends Activity {
 						String[] netInfo = netInfos.split(":");
 						Toast.makeText(getBaseContext(), String.valueOf(StaticBox.connectToHost(netInfo[0], Integer.parseInt(netInfo[1]))), Toast.LENGTH_SHORT).show();
 						break;
-						
-					/*
-					 * Edit
-					 */
+
+						/*
+						 * Edit
+						 */
 					case 1:
 						Intent intent = new Intent(WorkspaceListView.this, WorkspaceDetailView.class);
 						intent.putExtra("WorkspaceName", wsItem.getEncryptedName());
 						startActivityForResult(intent, 1);
 						break;
-					
-					/*
-					 * Delete
-					 */
+
+						/*
+						 * Delete
+						 */
 					case 2:
-						
+
 						try {
 							/*
 							 * Delete workspace file
 							 */
-							boolean done = deleteFile("w" + wsItem.getEncryptedName().trim());
-							
+							deleteFile("w" + wsItem.getEncryptedName().trim());
+
 							/*
 							 * Delete workspace info in StaticValue.WORKSPACE_FILE
 							 */
-							
+
 							FileInputStream fis = openFileInput(StaticBox.WORKSPACE_FILE);
 							Properties properties = new Properties();
 							properties.load(fis);
 							fis.close();
-							
+
 							int id = wsItem.getId();
 							properties.remove("w" + id);
 							properties.setProperty("n", String.valueOf(--numberOfWorkspaces));
-							
+
 							FileOutputStream fos = openFileOutput(StaticBox.WORKSPACE_FILE, Context.MODE_PRIVATE);
 							properties.store(fos, null);
 							fos.flush();
 							fos.close();
-							
+
 							refreshWorkspaceList();
 						} catch (FileNotFoundException e) {
 							// TODO Auto-generated catch block
@@ -149,7 +149,7 @@ public class WorkspaceListView extends Activity {
 							e.printStackTrace();
 						}
 
-						
+
 					}
 				}
 			});
@@ -175,35 +175,36 @@ public class WorkspaceListView extends Activity {
 	 * Create event for Option Menu
 	 */
 	public boolean onOptionsItemSelected(MenuItem item) {
-		
+
 		Intent intent; 
-		
+
 		switch (item.getItemId()) {
-		
+
 		/*
 		 * Refresh workspace list
 		 */
 		case R.id.wsl_refresh:
 			refreshWorkspaceList();
 			break;
-			
-		/*
-		 * Case change to identity list
-		 */
+
+			/*
+			 * Case change to identity list
+			 */
 		case R.id.wsl_change_id:
 			intent = new Intent(WorkspaceListView.this, SemanticListView.class);
 			startActivity(intent);
 			finish();
 			break;
-			
+
 		case R.id.wsl_change_tag:
 			intent = new Intent(WorkspaceListView.this, TagListView.class);
 			startActivity(intent);
 			finish();
 			break;
-		/*
-		 * Create new workspace
-		 */
+		
+			/*
+			 * Create new workspace
+			 */
 		case R.id.wsl_new_ws:
 			Intent iWorkspaceDetail = new Intent(WorkspaceListView.this, WorkspaceDetailView.class);
 			iWorkspaceDetail.putExtra("WorkspaceName", "null");
@@ -235,18 +236,18 @@ public class WorkspaceListView extends Activity {
 			for (int i = 1; i <= numberOfWorkspaces; i++) {
 				String ws = properties.getProperty("w" + i).trim();
 				if (ws != null) {
-					
+
 					FileInputStream fis2 = openFileInput("w" + ws);
 					Properties properties2 = new Properties();
 					properties2.load(fis2);
 					fis2.close();
-					
+
 					WorkspaceItem wi = new WorkspaceItem();
 					wi.setEncryptedName(ws.trim());
 					ws = StaticBox.keyCrypto.decrypt(ws);
 					wi.setId(i);
 					wi.setName(ws);
-					
+
 					wi.setAccuracy(properties2.getProperty("network"));
 					wi.setLastVisit(properties2.getProperty("gps"));
 					list.add(wi);
@@ -266,14 +267,14 @@ public class WorkspaceListView extends Activity {
 		}
 		return list;
 	}
-	
+
 	public void refreshWorkspaceList() {
 		workspaceList = loadWorkspace();
 		cba.setArraylist(workspaceList);
 		cba.notifyDataSetChanged();
 		lvWorkspace.setAdapter(cba);
 	}
-	
+
 	protected void onResume() {
 		super.onResume();
 		refreshWorkspaceList();

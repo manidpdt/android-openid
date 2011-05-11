@@ -17,6 +17,8 @@ public class StaticBox {
 	public static final String SEMANTIC_FILE = "bluebox.semantic";
 	public static final String WORKSPACE_FILE = "bluebox.workspace";
 	
+	public static final String SYNONYMS_FILE = "bluebox.synonyms";
+	
 	public static PasswordCrypto passwordCrypto;
 	public static KeyCrypto keyCrypto;
 	/*
