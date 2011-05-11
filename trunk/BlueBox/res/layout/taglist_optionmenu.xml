@@ -4,7 +4,7 @@
 		<!-- "New" submenu -->
 		<menu>
 			<item android:id="@+id/tl_change_ws" android:title="Workspace" />
-			<item android:id="@+id/tl_change_tag" android:title="Tag" />
+			<item android:id="@+id/tl_change_Identity" android:title="Identity" />
 		</menu>
 	</item>
 	<item android:id="@+id/tl_new_tag" android:title="New Tag" />

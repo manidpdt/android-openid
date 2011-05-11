@@ -17,6 +17,7 @@ import android.bluebox.R;
 import android.bluebox.model.StaticBox;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.DialogInterface.OnClickListener;
 import android.os.Bundle;
 import android.view.Menu;
@@ -90,6 +91,9 @@ public class TagListView extends ListActivity {
 	 * Create event for Option Menu
 	 */
 	public boolean onOptionsItemSelected(MenuItem item) {
+		
+		Intent intent;
+		
 		switch (item.getItemId()) {
 		case R.id.tl_new_tag:
 
@@ -125,7 +129,13 @@ public class TagListView extends ListActivity {
 			});
 			alert.show();
 			break;
+			
+		case R.id.tl_change_ws:
+			intent = new Intent(TagListView.this, WorkspaceListView.class);
+			startActivity(intent);
+			break;
 		}	
+		
 		return true;
 	}
 	
