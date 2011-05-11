@@ -28,6 +28,8 @@
 		
 		<activity android:name=".view.IdentityTagListView" android:label="@+string/IdentityTagListView"></activity>
 		
+		<activity android:name=".view.IdentityWorkspaceListView" android:label="@+string/IdentityWorkspaceListView"></activity>
+		
 		<activity android:name=".view.TagListView" android:label="@+string/TagListView"></activity>
 		
 </application>

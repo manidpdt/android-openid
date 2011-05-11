@@ -175,6 +175,9 @@ public class WorkspaceListView extends Activity {
 	 * Create event for Option Menu
 	 */
 	public boolean onOptionsItemSelected(MenuItem item) {
+		
+		Intent intent; 
+		
 		switch (item.getItemId()) {
 		
 		/*
@@ -188,11 +191,16 @@ public class WorkspaceListView extends Activity {
 		 * Case change to identity list
 		 */
 		case R.id.wsl_change_id:
-			Intent intent = new Intent(WorkspaceListView.this, SemanticListView.class);
+			intent = new Intent(WorkspaceListView.this, SemanticListView.class);
 			startActivity(intent);
 			finish();
 			break;
 			
+		case R.id.wsl_change_tag:
+			intent = new Intent(WorkspaceListView.this, TagListView.class);
+			startActivity(intent);
+			finish();
+			break;
 		/*
 		 * Create new workspace
 		 */

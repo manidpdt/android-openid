@@ -1,0 +1,4 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+	<item android:id="@+id/itl_add_workspace" android:title="Add workspace" />
+	<item android:id="@+id/itl_manage_workspace" android:title="Manage workspace" />
+</menu>

@@ -1,13 +1,4 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-	<item android:id="@+id/tl_refresh" android:title="Refresh" />
-	<item android:id="@+id/tl_change" android:title="Change">
-		<!-- "New" submenu -->
-		<menu>
-			<item android:id="@+id/tl_change_ws" android:title="Workspace" />
-			<item android:id="@+id/tl_change_tag" android:title="Tag" />
-		</menu>
-	</item>
-	<item android:id="@+id/tl_new_tag" android:title="New Tag" />
-	<item android:id="@+id/tl_setting" android:title="Setting" />
-	<item android:id="@+id/tl_exit" android:title="Exit" />
+	<item android:id="@+id/itl_add_tag" android:title="Add tag" />
+	<item android:id="@+id/itl_manage_tag" android:title="Manage tag" />
 </menu>

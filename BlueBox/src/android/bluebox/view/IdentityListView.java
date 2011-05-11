@@ -116,7 +116,7 @@ public class IdentityListView extends Activity {
 					Toast.LENGTH_SHORT).show();
 
 			/*
-			 * Create list of option: Connect, Edit, Delete
+			 * Create list of option: Connect, Edit Value, Edit Tag, Edit Workspace, Delete
 			 */
 			final CharSequence[] idOption = { "Connect", "Edit Value",
 					"Edit Tag", "Edit Workspace", "Delete" };
@@ -157,7 +157,6 @@ public class IdentityListView extends Activity {
 					case 2:
 						intent = new Intent(IdentityListView.this,
 								IdentityTagListView.class);
-						Bundle b = new Bundle();
 
 						intent.putExtra("encryptedIdName", encryptedIdName);
 						intent.putExtra("id", String.valueOf(idItem.getId()));
@@ -208,6 +207,9 @@ public class IdentityListView extends Activity {
 	 * Create event for Option Menu
 	 */
 	public boolean onOptionsItemSelected(MenuItem item) {
+		
+		Intent intent;
+		
 		switch (item.getItemId()) {
 		case R.id.idd_new_id:
 			AlertDialog.Builder alert = new AlertDialog.Builder(this);
@@ -277,6 +279,23 @@ public class IdentityListView extends Activity {
 						}
 					});
 			alert.show();
+			
+			/*
+			 * Go to Tag Activity
+			 */
+		case R.id.idd_change_tag:
+			
+			intent = new Intent(IdentityListView.this, TagListView.class);
+			startActivity(intent);
+			break;
+		
+			/*
+			 * Go to Tag Activity
+			 */		
+		case R.id.idd_change_ws:
+			intent = new Intent(IdentityListView.this, WorkspaceListView.class);
+			startActivity(intent);
+			break;
 		}
 
 		return true;
