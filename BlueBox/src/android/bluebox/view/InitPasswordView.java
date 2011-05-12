@@ -88,8 +88,9 @@ public class InitPasswordView extends Activity {
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 
-		if(resultCode == 1) //all done
+		if(resultCode == RESULT_OK) //all done
 		{
+			this.setResult(RESULT_OK);
 			this.finish();
 		}
 	}

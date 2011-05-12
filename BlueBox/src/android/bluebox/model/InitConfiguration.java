@@ -22,6 +22,7 @@ public class InitConfiguration extends Activity {
 		String remind = b.getString("remind");
 		initConfig(pwd, remind);
 		Toast.makeText(this, "Congratilation", Toast.LENGTH_LONG).show();
+		setResult(RESULT_OK);
 	}
 
 	public void initConfig(String pwd, String remind) {
@@ -156,6 +157,46 @@ public class InitConfiguration extends Activity {
 			properties.setProperty("header", StaticBox.keyCrypto.getMD5Key());
 			
 			// So luong workspace hien tai = 0
+			
+			properties.setProperty("n", "0");
+			
+			properties.store(fos, null);
+			
+		} catch (FileNotFoundException e) {
+		} catch (IOException e) {
+		}
+	}
+	
+	public void createSynonymsFile() {
+		try {
+			FileOutputStream fos = openFileOutput(StaticBox.SYNONYMS_FILE, Context.MODE_PRIVATE);
+			Properties properties = new Properties();
+			
+			//luu ma md5 cua key de tranh truong hop bi chep de tu may khac
+			
+			properties.setProperty("header", StaticBox.keyCrypto.getMD5Key());
+			
+			// So luong identity hien tai = 0
+			
+			properties.setProperty("n", "0");
+			
+			properties.store(fos, null);
+			
+		} catch (FileNotFoundException e) {
+		} catch (IOException e) {
+		}
+	}
+	
+	public void createLogFile() {
+		try {
+			FileOutputStream fos = openFileOutput(StaticBox.LOG_FILE, Context.MODE_PRIVATE);
+			Properties properties = new Properties();
+			
+			//luu ma md5 cua key de tranh truong hop bi chep de tu may khac
+			
+			properties.setProperty("header", StaticBox.keyCrypto.getMD5Key());
+			
+			// So luong record hien tai = 0
 			
 			properties.setProperty("n", "0");
 			
