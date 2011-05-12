@@ -157,32 +157,7 @@ public class WorkspaceDetailView extends Activity {
 		@Override
 		public void onClick(View arg0) {
 			// TODO Auto-generated method stub
-			try {
-				InetAddress host = InetAddress.getByName(hostIP);
-				Socket socket = new Socket(host, hostPort);
-
-				ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
-				oos.writeObject("IamBluebox");
-
-				ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
-				String message = (String) ois.readObject();
-
-				txtNetwork.setText(hostIP + ":" + hostPort);
-				Toast.makeText(getBaseContext(), message, Toast.LENGTH_SHORT).show();
-
-				ois.close();
-				oos.close();
-
-			} catch (UnknownHostException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (ClassNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			StaticBox.connectToHost(hostIP, hostPort);
 		}
 	};
 

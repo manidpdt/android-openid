@@ -1,19 +1,13 @@
 package android.bluebox.model;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.Calendar;
-import java.util.Properties;
 
 import android.app.Activity;
-import android.content.Context;
 
 public class StaticBox extends Activity {
 	public static final String PWD_MD5 = "bluebox.pwdmd5";

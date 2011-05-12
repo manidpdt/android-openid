@@ -69,7 +69,7 @@ public class IdentityTagListView extends ListActivity {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		this.setListAdapter(new ArrayAdapter<String>(this, R.layout.taglist, tagList));
+		this.setListAdapter(new ArrayAdapter<String>(this, R.layout.identitytaglist, tagList));
 	}
 
 	public boolean onCreateOptionsMenu(Menu menu) {
