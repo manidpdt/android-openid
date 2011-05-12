@@ -143,9 +143,7 @@ public class IdentityListView extends Activity {
 					 * Connect
 					 */
 					case 0:
-
 						sendIdentity(idItem);
-
 						break;
 
 						/*
@@ -234,33 +232,22 @@ public class IdentityListView extends Activity {
 					.toString().trim();
 					if (newIdentityValue.length() > 0) {
 						try {
-							FileInputStream fis = openFileInput("s"
-									+ encryptedIdName);
+							FileInputStream fis = openFileInput("s"	+ encryptedIdName);
 							Properties properties = new Properties();
 							properties.load(fis);
 							fis.close();
 
-							numberOfId = Integer.parseInt(properties
-									.getProperty("n"));
-							properties.setProperty("n",
-									String.valueOf(++numberOfId));
-							properties.setProperty("i" + numberOfId,
-									StaticBox.keyCrypto
-									.encrypt(newIdentityValue));
-							properties.setProperty("t" + numberOfId,
-									StaticBox.keyCrypto.encrypt(""));
-							properties.setProperty("w" + numberOfId,
-									StaticBox.keyCrypto.encrypt(""));
+							numberOfId = Integer.parseInt(properties.getProperty("n"));
+							properties.setProperty("n", String.valueOf(++numberOfId));
+							properties.setProperty("i" + numberOfId, StaticBox.keyCrypto.encrypt(newIdentityValue));
+							properties.setProperty("t" + numberOfId, StaticBox.keyCrypto.encrypt(""));
+							properties.setProperty("w" + numberOfId, StaticBox.keyCrypto.encrypt(""));
 
-							FileOutputStream fos = openFileOutput("s"
-									+ encryptedIdName,
-									Context.MODE_PRIVATE);
+							FileOutputStream fos = openFileOutput("s"+ encryptedIdName, Context.MODE_PRIVATE);
 							properties.store(fos, null);
 							fos.flush();
 							fos.close();
-							Toast.makeText(getBaseContext(),
-									"Identity created",
-									Toast.LENGTH_SHORT).show();
+							Toast.makeText(getBaseContext(), "Identity created", Toast.LENGTH_SHORT).show();
 							refreshIdentityList();
 						} catch (FileNotFoundException e) {
 						} catch (IOException e) {
