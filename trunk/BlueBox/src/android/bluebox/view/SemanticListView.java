@@ -192,7 +192,7 @@ public class SemanticListView extends ListActivity {
 			fos = openFileOutput(StaticBox.SYNONYMS_FILE, Context.MODE_PRIVATE);
 			properties = new Properties();
 			properties.setProperty("n", String.valueOf(n));
-			properties.setProperty("s" + n, encryptedName);
+			properties.setProperty(String.valueOf(n), encryptedName);
 			properties.store(fos, null);
 			fos.flush();
 			fos.close();
@@ -364,8 +364,8 @@ public class SemanticListView extends ListActivity {
 			properties.load(fis);
 			fis.close();
 			
-			if (id > 0 )
-				properties.remove("s" + id);
+			if (id > 0)
+				properties.remove(String.valueOf(id));
 			
 			fos = openFileOutput(StaticBox.SYNONYMS_FILE, Context.MODE_PRIVATE);
 			properties.store(fos, null);
