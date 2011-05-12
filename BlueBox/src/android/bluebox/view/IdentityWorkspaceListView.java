@@ -68,7 +68,7 @@ public class IdentityWorkspaceListView extends ListActivity {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		this.setListAdapter(new ArrayAdapter<String>(this, R.layout.workspacelist, workspaceList));
+		this.setListAdapter(new ArrayAdapter<String>(this, R.layout.identityworkspacelist, workspaceList));
 	}
 
 	public boolean onCreateOptionsMenu(Menu menu) {

@@ -75,22 +75,22 @@ public class IdentityListView extends Activity {
 				if (idString != null) {
 					idString = StaticBox.keyCrypto.decrypt(idString);
 					idItem.setName(idString);
+					idItem.setEncryptedName(StaticBox.keyCrypto.encrypt(idString));
 					idItem.setId(i);
-				}
 
-				idString = properties.getProperty("t" + i);
-				if (idString != null) {
-					idString = StaticBox.keyCrypto.decrypt(idString);
-					idItem.setTagList("Tag: " + idString);
-				}
+					idString = properties.getProperty("t" + i);
+					if (idString != null) {
+						idString = StaticBox.keyCrypto.decrypt(idString);
+						idItem.setTagList("Tag: " + idString);
+					}
 
-				idString = properties.getProperty("w" + i);
-				if (idString != null) {
-					idString = StaticBox.keyCrypto.decrypt(idString);
-					idItem.setWorkspaceList("Workspace: " + idString);
+					idString = properties.getProperty("w" + i);
+					if (idString != null) {
+						idString = StaticBox.keyCrypto.decrypt(idString);
+						idItem.setWorkspaceList("Workspace: " + idString);
+					}
+					list.add(idItem);
 				}
-
-				list.add(idItem);
 			}
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
@@ -248,7 +248,7 @@ public class IdentityListView extends Activity {
 									StaticBox.keyCrypto
 									.encrypt(newIdentityValue));
 							properties.setProperty("t" + numberOfId,
-									StaticBox.keyCrypto.encrypt("default, top"));
+									StaticBox.keyCrypto.encrypt(""));
 							properties.setProperty("w" + numberOfId,
 									StaticBox.keyCrypto.encrypt(""));
 
@@ -283,6 +283,7 @@ public class IdentityListView extends Activity {
 				}
 			});
 			alert.show();
+			break;
 
 			/*
 			 * Go to Tag Activity
@@ -393,7 +394,7 @@ public class IdentityListView extends Activity {
 	public void deleteIdentityValue(IdentityItem idItem) {
 
 		try {
-			FileInputStream fis = openFileInput("s" + idItem.getEncryptedName());
+			FileInputStream fis = openFileInput("s" + encryptedIdName);
 			Properties properties = new Properties();
 			properties.load(fis);
 			fis.close();
@@ -402,10 +403,12 @@ public class IdentityListView extends Activity {
 			properties.remove("t" + idItem.getId());
 			properties.remove("w" + idItem.getId());
 
-			FileOutputStream fos = openFileOutput("s" + idItem.getEncryptedName(), Context.MODE_PRIVATE);
+			FileOutputStream fos = openFileOutput("s" + encryptedIdName, Context.MODE_PRIVATE);
 			properties.store(fos, null);
 			fos.flush();
 			fos.close();
+
+			refreshIdentityList();
 
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
@@ -450,7 +453,7 @@ public class IdentityListView extends Activity {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		return false;
 	}
 }

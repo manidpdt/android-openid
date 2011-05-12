@@ -100,6 +100,7 @@ public class WorkspaceListView extends Activity {
 						String netInfos = StaticBox.keyCrypto.decrypt(wsItem.getAccuracy()).trim();
 						String[] netInfo = netInfos.split(":");
 						Toast.makeText(getBaseContext(), String.valueOf(StaticBox.connectToHost(netInfo[0], Integer.parseInt(netInfo[1]))), Toast.LENGTH_SHORT).show();
+						StaticBox.currentNetwork = netInfo[0];
 						break;
 
 						/*
@@ -216,7 +217,6 @@ public class WorkspaceListView extends Activity {
 		return true;
 	}
 
-
 	// load and decrypt workspace from file WORKSPACE_FILE
 
 	public ArrayList<WorkspaceItem> loadWorkspace() {
@@ -225,16 +225,17 @@ public class WorkspaceListView extends Activity {
 
 		try {
 			FileInputStream fis = openFileInput(StaticBox.WORKSPACE_FILE);
-
 			Properties properties = new Properties();
 			properties.load(fis);
+			fis.close();
 
 			numberOfWorkspaces = Integer.parseInt(properties.getProperty("n"));
 
 			for (int i = 1; i <= numberOfWorkspaces; i++) {
-				String ws = properties.getProperty("w" + i).trim();
+				String ws = properties.getProperty("w" + i);
 				if (ws != null) {
 
+					ws = ws.trim();
 					FileInputStream fis2 = openFileInput("w" + ws);
 					Properties properties2 = new Properties();
 					properties2.load(fis2);
@@ -251,8 +252,6 @@ public class WorkspaceListView extends Activity {
 					list.add(wi);
 				}
 			}
-
-			fis.close();
 
 			return list;
 

@@ -23,6 +23,7 @@ public class InitConfiguration extends Activity {
 		initConfig(pwd, remind);
 		Toast.makeText(this, "Congratilation", Toast.LENGTH_LONG).show();
 		setResult(RESULT_OK);
+		finish();
 	}
 
 	public void initConfig(String pwd, String remind) {
@@ -47,6 +48,8 @@ public class InitConfiguration extends Activity {
 		createTagFile();
 		createSemanticFile();
 		createWorkspaceFile();
+		createSynonymsFile();
+		createLogFile();
 	}
 
 	// Ma hoa chuoi pwd theo md5
@@ -161,7 +164,7 @@ public class InitConfiguration extends Activity {
 			properties.setProperty("n", "0");
 			
 			properties.store(fos, null);
-			
+			fos.close();
 		} catch (FileNotFoundException e) {
 		} catch (IOException e) {
 		}
@@ -181,7 +184,7 @@ public class InitConfiguration extends Activity {
 			properties.setProperty("n", "0");
 			
 			properties.store(fos, null);
-			
+			fos.close();
 		} catch (FileNotFoundException e) {
 		} catch (IOException e) {
 		}
@@ -201,7 +204,7 @@ public class InitConfiguration extends Activity {
 			properties.setProperty("n", "0");
 			
 			properties.store(fos, null);
-			
+			fos.close();
 		} catch (FileNotFoundException e) {
 		} catch (IOException e) {
 		}

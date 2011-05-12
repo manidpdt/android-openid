@@ -92,6 +92,9 @@ public class SemanticListView extends ListActivity {
 	 * Create event for Option Menu
 	 */
 	public boolean onOptionsItemSelected(MenuItem item) {
+		
+		Intent intent;
+		
 		switch (item.getItemId()) {
 		case R.id.idl_new_id:
 
@@ -126,6 +129,18 @@ public class SemanticListView extends ListActivity {
 				}
 			});
 			alert.show();
+			break;
+			
+		case R.id.idl_change_ws:
+			intent = new Intent(SemanticListView.this, WorkspaceListView.class);
+			startActivity(intent);
+			finish();
+			break;
+			
+		case R.id.idl_change_tag:
+			intent = new Intent(SemanticListView.this, TagListView.class);
+			startActivity(intent);
+			finish();
 			break;
 		}	
 		return true;
