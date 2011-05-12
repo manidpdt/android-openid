@@ -64,7 +64,18 @@ public class InitQuestionView extends Activity {
 		@Override
 		public void onClick(View arg0) {
 			// TODO Auto-generated method stub
+			setResult(RESULT_OK);
 			finish();
 		}
 	};
+	
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+
+		if(resultCode == RESULT_OK) //all done
+		{
+			this.setResult(RESULT_OK);
+			this.finish();
+		}
+	}
 }

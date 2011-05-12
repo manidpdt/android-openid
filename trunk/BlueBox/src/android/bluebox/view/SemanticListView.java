@@ -165,11 +165,23 @@ public class SemanticListView extends ListActivity {
 			 * Create new file of identity
 			 */
 			fos = openFileOutput("s" + encryptedName, Context.MODE_PRIVATE);
-			Properties properties2 = new Properties();
-			properties2.setProperty("n", "0");
-			properties2.store(fos, null);
+			properties = new Properties();
+			properties.setProperty("n", "0");
+			properties.store(fos, null);
 			fos.flush();
 			fos.close();
+			
+			/*
+			 * Add data to synonyms file
+			 */
+			fos = openFileOutput(StaticBox.SYNONYMS_FILE, Context.MODE_PRIVATE);
+			properties = new Properties();
+			properties.setProperty("n", String.valueOf(n));
+			properties.setProperty("s" + n, encryptedName);
+			properties.store(fos, null);
+			fos.flush();
+			fos.close();
+			
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -307,10 +319,14 @@ public class SemanticListView extends ListActivity {
 			/*
 			 * Delete record
 			 */
+			
+			int id = 0;
+			
 			for (int i = 1; i <=n; i++) {
-				String id = properties.getProperty("s" + i);
-				if (id.equals(StaticBox.keyCrypto.encrypt(identityName))) {
-					properties.remove("s" + i);
+				String idName = properties.getProperty("s" + i);
+				if (idName.equals(StaticBox.keyCrypto.encrypt(identityName))) {
+					properties.remove("s" + i);	
+					id = i;
 					break;
 				}
 			}
@@ -318,12 +334,29 @@ public class SemanticListView extends ListActivity {
 			/*
 			 * Update number of identities
 			 */
-			properties.setProperty("n", String.valueOf(--n));
+//			properties.setProperty("n", String.valueOf(--n));
 
 			FileOutputStream fos = openFileOutput(StaticBox.SEMANTIC_FILE, Context.MODE_PRIVATE);
 			properties.store(fos, null);
 			fos.close();
 
+			/*
+			 * Delete record in SYNONYMS_FILE
+			 */
+			
+			fis = openFileInput(StaticBox.SYNONYMS_FILE);
+			properties = new Properties();
+			properties.load(fis);
+			fis.close();
+			
+			if (id > 0 )
+				properties.remove("s" + id);
+			
+			fos = openFileOutput(StaticBox.SYNONYMS_FILE, Context.MODE_PRIVATE);
+			properties.store(fos, null);
+			fos.flush();
+			fos.close();
+			
 			/*
 			 * Delete file
 			 */

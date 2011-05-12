@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Properties;
 
 import android.app.Activity;
@@ -110,7 +111,7 @@ public class IdentityListView extends Activity {
 		public void onItemClick(AdapterView<?> a, View v, int position, long id) {
 			// TODO Auto-generated method stub
 			final IdentityItem idItem = (IdentityItem) lvIdentityDetail
-					.getItemAtPosition(position);
+			.getItemAtPosition(position);
 			Toast.makeText(IdentityListView.this,
 					"You have chosen: " + " " + idItem.getName(),
 					Toast.LENGTH_SHORT).show();
@@ -143,17 +144,19 @@ public class IdentityListView extends Activity {
 					 */
 					case 0:
 
+						sendIdentity(idItem);
+
 						break;
 
-					/*
-					 * Edit Value
-					 */
+						/*
+						 * Edit Value
+						 */
 					case 1:
 						editIdentityValue(idItem.getId(), idItem.getName());
 						break;
-					/*
-					 * Edit Tag
-					 */
+						/*
+						 * Edit Tag
+						 */
 					case 2:
 						intent = new Intent(IdentityListView.this,
 								IdentityTagListView.class);
@@ -164,9 +167,9 @@ public class IdentityListView extends Activity {
 
 						break;
 
-					/*
-					 * Edit Workspace
-					 */
+						/*
+						 * Edit Workspace
+						 */
 					case 3:
 						intent = new Intent(IdentityListView.this,
 								IdentityWorkspaceListView.class);
@@ -177,10 +180,11 @@ public class IdentityListView extends Activity {
 
 						break;
 
-					/*
-					 * Delete
-					 */
+						/*
+						 * Delete
+						 */
 					case 4:
+						deleteIdentityValue(idItem);
 						break;
 					}
 				}
@@ -207,9 +211,9 @@ public class IdentityListView extends Activity {
 	 * Create event for Option Menu
 	 */
 	public boolean onOptionsItemSelected(MenuItem item) {
-		
+
 		Intent intent;
-		
+
 		switch (item.getItemId()) {
 		case R.id.idd_new_id:
 			AlertDialog.Builder alert = new AlertDialog.Builder(this);
@@ -223,72 +227,72 @@ public class IdentityListView extends Activity {
 			alert.setPositiveButton("Ok",
 					new DialogInterface.OnClickListener() {
 
-						@Override
-						public void onClick(DialogInterface dialog, int button) {
-							// TODO Auto-generated method stub
-							String newIdentityValue = edtName.getText()
-									.toString().trim();
-							if (newIdentityValue.length() > 0) {
-								try {
-									FileInputStream fis = openFileInput("s"
-											+ encryptedIdName);
-									Properties properties = new Properties();
-									properties.load(fis);
-									fis.close();
+				@Override
+				public void onClick(DialogInterface dialog, int button) {
+					// TODO Auto-generated method stub
+					String newIdentityValue = edtName.getText()
+					.toString().trim();
+					if (newIdentityValue.length() > 0) {
+						try {
+							FileInputStream fis = openFileInput("s"
+									+ encryptedIdName);
+							Properties properties = new Properties();
+							properties.load(fis);
+							fis.close();
 
-									numberOfId = Integer.parseInt(properties
-											.getProperty("n"));
-									properties.setProperty("n",
-											String.valueOf(++numberOfId));
-									properties.setProperty("i" + numberOfId,
-											StaticBox.keyCrypto
-													.encrypt(newIdentityValue));
-									properties.setProperty("t" + numberOfId,
-											StaticBox.keyCrypto.encrypt("default, top"));
-									properties.setProperty("w" + numberOfId,
-											StaticBox.keyCrypto.encrypt(""));
+							numberOfId = Integer.parseInt(properties
+									.getProperty("n"));
+							properties.setProperty("n",
+									String.valueOf(++numberOfId));
+							properties.setProperty("i" + numberOfId,
+									StaticBox.keyCrypto
+									.encrypt(newIdentityValue));
+							properties.setProperty("t" + numberOfId,
+									StaticBox.keyCrypto.encrypt("default, top"));
+							properties.setProperty("w" + numberOfId,
+									StaticBox.keyCrypto.encrypt(""));
 
-									FileOutputStream fos = openFileOutput("s"
-											+ encryptedIdName,
-											Context.MODE_PRIVATE);
-									properties.store(fos, null);
-									fos.flush();
-									fos.close();
-									Toast.makeText(getBaseContext(),
-											"Identity created",
-											Toast.LENGTH_SHORT).show();
-									refreshIdentityList();
-								} catch (FileNotFoundException e) {
-								} catch (IOException e) {
-									e.printStackTrace();
-								}
-							} else {
-								Toast.makeText(getBaseContext(),
-										"Fail create identity",
-										Toast.LENGTH_SHORT).show();
-							}
+							FileOutputStream fos = openFileOutput("s"
+									+ encryptedIdName,
+									Context.MODE_PRIVATE);
+							properties.store(fos, null);
+							fos.flush();
+							fos.close();
+							Toast.makeText(getBaseContext(),
+									"Identity created",
+									Toast.LENGTH_SHORT).show();
+							refreshIdentityList();
+						} catch (FileNotFoundException e) {
+						} catch (IOException e) {
+							e.printStackTrace();
 						}
-					});
+					} else {
+						Toast.makeText(getBaseContext(),
+								"Fail create identity",
+								Toast.LENGTH_SHORT).show();
+					}
+				}
+			});
 
 			alert.setNegativeButton("Cancel",
 					new DialogInterface.OnClickListener() {
 
-						@Override
-						public void onClick(DialogInterface dialog, int button) {
-							// TODO Auto-generated method stub
-						}
-					});
+				@Override
+				public void onClick(DialogInterface dialog, int button) {
+					// TODO Auto-generated method stub
+				}
+			});
 			alert.show();
-			
+
 			/*
 			 * Go to Tag Activity
 			 */
 		case R.id.idd_change_tag:
-			
+
 			intent = new Intent(IdentityListView.this, TagListView.class);
 			startActivity(intent);
 			break;
-		
+
 			/*
 			 * Go to Tag Activity
 			 */		
@@ -359,30 +363,94 @@ public class IdentityListView extends Activity {
 		alert.setPositiveButton("Change",
 				new DialogInterface.OnClickListener() {
 
-					@Override
-					public void onClick(DialogInterface dialog, int button) {
-						// TODO Auto-generated method stub
-						String newIdentityValue = edtName.getText().toString()
-								.trim();
-						if (newIdentityValue.length() > 0) {
-							changeIdentityValue(id, newIdentityValue);
-							refreshIdentityList();
-						} else {
-							Toast.makeText(getBaseContext(),
-									"Fail create identity", Toast.LENGTH_SHORT)
-									.show();
-						}
-					}
-				});
+			@Override
+			public void onClick(DialogInterface dialog, int button) {
+				// TODO Auto-generated method stub
+				String newIdentityValue = edtName.getText().toString()
+				.trim();
+				if (newIdentityValue.length() > 0) {
+					changeIdentityValue(id, newIdentityValue);
+					refreshIdentityList();
+				} else {
+					Toast.makeText(getBaseContext(),
+							"Fail change identity value", Toast.LENGTH_SHORT)
+							.show();
+				}
+			}
+		});
 
 		alert.setNegativeButton("Cancel",
 				new DialogInterface.OnClickListener() {
 
-					@Override
-					public void onClick(DialogInterface dialog, int button) {
-						// TODO Auto-generated method stub
-					}
-				});
+			@Override
+			public void onClick(DialogInterface dialog, int button) {
+				// TODO Auto-generated method stub
+			}
+		});
 		alert.show();
+	}
+
+	public void deleteIdentityValue(IdentityItem idItem) {
+
+		try {
+			FileInputStream fis = openFileInput("s" + idItem.getEncryptedName());
+			Properties properties = new Properties();
+			properties.load(fis);
+			fis.close();
+
+			properties.remove("i" + idItem.getId());
+			properties.remove("t" + idItem.getId());
+			properties.remove("w" + idItem.getId());
+
+			FileOutputStream fos = openFileOutput("s" + idItem.getEncryptedName(), Context.MODE_PRIVATE);
+			properties.store(fos, null);
+			fos.flush();
+			fos.close();
+
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public boolean sendIdentity(IdentityItem idItem) {
+
+		/*
+		 * Write to log file
+		 */
+		Calendar cal = Calendar.getInstance();
+		int hour24 = cal.get(Calendar.HOUR_OF_DAY);
+
+		try {
+			FileInputStream fis = openFileInput(StaticBox.LOG_FILE);
+			Properties properties = new Properties();
+			properties.load(fis);
+			fis.close();
+
+			int n = Integer.parseInt(properties.getProperty("n"));
+			String record = hour24 + ":" + StaticBox.currentWorkspace
+			+ ":" + StaticBox.currentLocation + ":" 
+			+ StaticBox.currentNetwork + ":" + idItem.getId();
+			properties.setProperty("n", String.valueOf(++n));
+			properties.setProperty(String.valueOf(n), record);
+
+			FileOutputStream fos = openFileOutput(StaticBox.LOG_FILE, Context.MODE_PRIVATE);
+			properties.store(fos, null);
+			fos.flush();
+			fos.close();
+
+			return true;
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return false;
 	}
 }

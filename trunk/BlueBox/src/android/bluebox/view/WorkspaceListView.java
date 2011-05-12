@@ -133,7 +133,7 @@ public class WorkspaceListView extends Activity {
 
 							int id = wsItem.getId();
 							properties.remove("w" + id);
-							properties.setProperty("n", String.valueOf(--numberOfWorkspaces));
+//							properties.setProperty("n", String.valueOf(--numberOfWorkspaces));
 
 							FileOutputStream fos = openFileOutput(StaticBox.WORKSPACE_FILE, Context.MODE_PRIVATE);
 							properties.store(fos, null);
@@ -148,8 +148,6 @@ public class WorkspaceListView extends Activity {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
-
-
 					}
 				}
 			});

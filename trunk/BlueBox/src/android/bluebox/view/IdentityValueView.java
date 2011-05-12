@@ -71,6 +71,5 @@ public class IdentityValueView extends Activity {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
 	}
 }
