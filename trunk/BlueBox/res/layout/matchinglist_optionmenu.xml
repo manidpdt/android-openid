@@ -4,7 +4,8 @@
 		<!-- "New" submenu -->
 		<menu>
 			<item android:id="@+id/ml_change_ws" android:title="Workspace" />
-			<item android:id="@+id/ml_change_Identity" android:title="Identity" />
+			<item android:id="@+id/ml_change_id" android:title="Identity" />
+			<item android:id="@+id/ml_change_tag" android:title="Tag" />
 		</menu>
 	</item>
 	<item android:id="@+id/ml_exit" android:title="Exit" />

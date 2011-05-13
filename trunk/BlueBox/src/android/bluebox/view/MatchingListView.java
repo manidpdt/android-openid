@@ -15,7 +15,11 @@ import android.bluebox.R;
 import android.bluebox.model.MatchingCustomBaseAdapter;
 import android.bluebox.model.MatchingItem;
 import android.bluebox.model.StaticBox;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.ListView;
 
 public class MatchingListView extends Activity {
@@ -30,7 +34,7 @@ public class MatchingListView extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.matchinglist);
 
-//		message = this.getIntent().getExtras().getString("request");
+		//		message = this.getIntent().getExtras().getString("request");
 
 		lvMatching = (ListView) findViewById(R.id.ListOfMatching);
 		//		lvMatching.setOnItemClickListener(clickItem);
@@ -122,4 +126,48 @@ public class MatchingListView extends Activity {
 
 		return 0;
 	}
+
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.layout.matchinglist_optionmenu, menu);
+		return true;
+	}
+
+	/*
+	 * Create event for Option Menu
+	 */
+	public boolean onOptionsItemSelected(MenuItem item) {
+
+		Intent intent;
+
+		switch (item.getItemId()) {
+		
+		/*
+		 * Send data to PC
+		 */
+		case R.id.ml_send:
+			break;
+			
+		case R.id.ml_change_id:
+			intent = new Intent(MatchingListView.this, SemanticListView.class);
+			startActivity(intent);
+			finish();
+			break;
+			
+		case R.id.ml_change_ws:
+			intent = new Intent(MatchingListView.this, WorkspaceListView.class);
+			startActivity(intent);
+			finish();
+			break;
+			
+		case R.id.ml_change_tag:
+			intent = new Intent(MatchingListView.this, TagListView.class);
+			startActivity(intent);
+			finish();
+			break;
+		}
+		
+		return true;
+	}
+
 }
