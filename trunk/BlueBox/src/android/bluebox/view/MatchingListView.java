@@ -112,7 +112,11 @@ public class MatchingListView extends Activity {
 			for (int i = 1; i <= n; i++) {
 				String syn = properties.getProperty(String.valueOf("s" + i));
 				syn = StaticBox.keyCrypto.decrypt(syn);
-				if (syn.contains(name))
+				
+				String[] syns = syn.split(",");
+				
+				for (int j = 0 ; j < syns.length; j++)
+				if (syns[j].contains(name) || name.contains(syns[j]))
 					return i;
 			}
 
