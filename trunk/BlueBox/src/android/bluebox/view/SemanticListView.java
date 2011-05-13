@@ -38,7 +38,9 @@ public class SemanticListView extends ListActivity {
 	String newIdentityValue = "";
 
 	AlertDialog.Builder alert;
-	EditText edtName; 
+	EditText edtName;
+
+	int index = 0;
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -92,9 +94,9 @@ public class SemanticListView extends ListActivity {
 	 * Create event for Option Menu
 	 */
 	public boolean onOptionsItemSelected(MenuItem item) {
-		
+
 		Intent intent;
-		
+
 		switch (item.getItemId()) {
 		case R.id.idl_new_id:
 
@@ -130,13 +132,13 @@ public class SemanticListView extends ListActivity {
 			});
 			alert.show();
 			break;
-			
+
 		case R.id.idl_change_ws:
 			intent = new Intent(SemanticListView.this, WorkspaceListView.class);
 			startActivity(intent);
 			finish();
 			break;
-			
+
 		case R.id.idl_change_tag:
 			intent = new Intent(SemanticListView.this, TagListView.class);
 			startActivity(intent);
@@ -185,7 +187,7 @@ public class SemanticListView extends ListActivity {
 			properties.store(fos, null);
 			fos.flush();
 			fos.close();
-			
+
 			/*
 			 * Add data to synonyms file
 			 */
@@ -196,7 +198,7 @@ public class SemanticListView extends ListActivity {
 			properties.store(fos, null);
 			fos.flush();
 			fos.close();
-			
+
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -218,7 +220,7 @@ public class SemanticListView extends ListActivity {
 			/*
 			 * Create list of option: Connect, Edit, Delete
 			 */
-			final CharSequence[] semanticOption = {"Open", "Edit", "Delete"};
+			final CharSequence[] semanticOption = {"Open", "Edit", "Synonyms", "Delete"};
 
 			/*
 			 * Create dialog
@@ -248,10 +250,13 @@ public class SemanticListView extends ListActivity {
 						editIdentityName(strName);
 						break;
 
+					case 2:
+						editSynonyms(strName);
+						break;
 						/*
 						 * Delete
 						 */
-					case 2:
+					case 3:
 						deleleIdentity(strName);
 						break;
 					}
@@ -267,6 +272,85 @@ public class SemanticListView extends ListActivity {
 			dialog.show();
 		}
 	};
+
+	private void editSynonyms(String strName) {
+		// TODO Auto-generated method stub
+		AlertDialog.Builder alert = new AlertDialog.Builder(this);
+		alert.setTitle("Edit Synonyms");
+		alert.setMessage("Synonyms list");
+
+		// Set an EditText view to get user Input
+		final EditText edtName = new EditText(this);
+
+		/*
+		 * find and load synonyms of identity
+		 */
+		try {
+			FileInputStream fis = openFileInput(StaticBox.SEMANTIC_FILE);
+			Properties properties = new Properties();
+			properties.load(fis);
+			fis.close();
+
+
+			int n = Integer.parseInt(properties.getProperty("n"));
+			for (int i = 1; i <= n; i++) {
+				String s = properties.getProperty("s" + i);
+				if (s != null) {
+					s = StaticBox.keyCrypto.decrypt(s); 
+					if (s.equals(strName)) {
+						index = i;
+						break;
+					}
+				}
+			}
+
+			fis = openFileInput(StaticBox.SYNONYMS_FILE);
+			properties = new Properties();
+			properties.load(fis);
+			fis.close();
+
+			edtName.setText(StaticBox.keyCrypto.decrypt(properties.getProperty("s" + index)));
+//			edtName.setText(properties.getProperty("s" + index));
+
+		} catch (FileNotFoundException e) {
+		} catch (IOException e) {
+		}
+
+		alert.setView(edtName);
+
+		alert.setPositiveButton("Change", new DialogInterface.OnClickListener() {
+
+			@Override
+			public void onClick(DialogInterface dialog, int button) {
+				// TODO Auto-generated method stub
+				try {
+					FileInputStream fis = openFileInput(StaticBox.SYNONYMS_FILE);
+					Properties properties = new Properties();
+					properties.load(fis);
+					fis.close();
+
+					properties.setProperty("s" + index, StaticBox.keyCrypto.encrypt(edtName.getText().toString()));
+
+					FileOutputStream fos = openFileOutput(StaticBox.SYNONYMS_FILE, Context.MODE_PRIVATE);
+					properties.store(fos, null);
+					fos.flush();
+					fos.close();
+
+				}catch (FileNotFoundException e) {
+				} catch (IOException e) {
+				}
+			}
+		});
+
+		alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+
+			@Override
+			public void onClick(DialogInterface dialog, int button) {
+				// TODO Auto-generated method stub
+			}
+		});
+		alert.show();
+	}
 
 	public void changeIdentityName(String oldName, String newName) {
 
@@ -295,7 +379,7 @@ public class SemanticListView extends ListActivity {
 			FileOutputStream fos = openFileOutput(StaticBox.SEMANTIC_FILE, Context.MODE_PRIVATE);
 			properties.store(fos, null);
 			fos.close();
-			
+
 			/*
 			 * Change file name
 			 */
@@ -334,9 +418,9 @@ public class SemanticListView extends ListActivity {
 			/*
 			 * Delete record
 			 */
-			
+
 			int id = 0;
-			
+
 			for (int i = 1; i <=n; i++) {
 				String idName = properties.getProperty("s" + i);
 				if (idName.equals(StaticBox.keyCrypto.encrypt(identityName))) {
@@ -349,7 +433,7 @@ public class SemanticListView extends ListActivity {
 			/*
 			 * Update number of identities
 			 */
-//			properties.setProperty("n", String.valueOf(--n));
+			//			properties.setProperty("n", String.valueOf(--n));
 
 			FileOutputStream fos = openFileOutput(StaticBox.SEMANTIC_FILE, Context.MODE_PRIVATE);
 			properties.store(fos, null);
@@ -358,20 +442,20 @@ public class SemanticListView extends ListActivity {
 			/*
 			 * Delete record in SYNONYMS_FILE
 			 */
-			
+
 			fis = openFileInput(StaticBox.SYNONYMS_FILE);
 			properties = new Properties();
 			properties.load(fis);
 			fis.close();
-			
+
 			if (id > 0)
 				properties.remove(String.valueOf(id));
-			
+
 			fos = openFileOutput(StaticBox.SYNONYMS_FILE, Context.MODE_PRIVATE);
 			properties.store(fos, null);
 			fos.flush();
 			fos.close();
-			
+
 			/*
 			 * Delete file
 			 */
@@ -386,7 +470,7 @@ public class SemanticListView extends ListActivity {
 		}
 		loadIdentity();
 	}
-	
+
 	public void editIdentityName(final String strName) {
 		AlertDialog.Builder alert = new AlertDialog.Builder(this);
 		alert.setTitle("Edit Identity");

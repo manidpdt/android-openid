@@ -36,10 +36,10 @@ public class TagListView extends ListActivity {
 
 	ListView lvTag;
 
-//	ArrayList<String> tagList;
-	
+	//	ArrayList<String> tagList;
+
 	int numberOfTag;
-	
+
 	String newTagName;
 
 	public void onCreate(Bundle savedInstanceState) {
@@ -61,9 +61,9 @@ public class TagListView extends ListActivity {
 			Properties properties = new Properties();
 			properties.load(fis);
 			fis.close();
-			
+
 			numberOfTag = Integer.parseInt(properties.getProperty("n"));
-			
+
 			for (int i = 1; i <= numberOfTag; i++) {
 				String tag = properties.getProperty("t" + i);
 				if (tag!= null) {
@@ -80,20 +80,20 @@ public class TagListView extends ListActivity {
 		}
 		this.setListAdapter(new ArrayAdapter<String>(this, R.layout.taglist, list));
 	}
-	
+
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.layout.taglist_optionmenu, menu);
 		return true;
 	}
-	
+
 	/*
 	 * Create event for Option Menu
 	 */
 	public boolean onOptionsItemSelected(MenuItem item) {
-		
+
 		Intent intent;
-		
+
 		switch (item.getItemId()) {
 		case R.id.tl_new_tag:
 
@@ -129,16 +129,22 @@ public class TagListView extends ListActivity {
 			});
 			alert.show();
 			break;
-			
+
 		case R.id.tl_change_ws:
 			intent = new Intent(TagListView.this, WorkspaceListView.class);
 			startActivity(intent);
 			break;
-		}	
+			
+		case R.id.tl_change_Identity:
+			intent = new Intent(TagListView.this, SemanticListView.class);
+			startActivity(intent);
+			break;
+		}
 		
+
 		return true;
 	}
-	
+
 	public void createNewTag(String newTagName) {
 
 		String encryptedName =  StaticBox.keyCrypto.encrypt(newTagName);
@@ -169,15 +175,6 @@ public class TagListView extends ListActivity {
 			fos.flush();
 			fos.close();
 
-			/*
-			 * Create new file of identity
-			 */
-//			fos = openFileOutput("t" + encryptedName, Context.MODE_PRIVATE);
-//			Properties properties2 = new Properties();
-//			properties2.setProperty("n", "0");
-//			properties2.store(fos, null);
-//			fos.flush();
-//			fos.close();
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -186,7 +183,7 @@ public class TagListView extends ListActivity {
 			e.printStackTrace();
 		}
 	}
-	
+
 	OnItemClickListener clickItem = new OnItemClickListener() {
 
 		@Override
@@ -217,9 +214,9 @@ public class TagListView extends ListActivity {
 					 */
 					switch(item) {
 					case 0:
-//						Intent intent = new Intent(TagListView.this, TagDetailView.class);
-//						intent.putExtra("tagName", strName);	// Send name of identity you want to open
-//						startActivity(intent);
+						//						Intent intent = new Intent(TagListView.this, TagDetailView.class);
+						//						intent.putExtra("tagName", strName);	// Send name of identity you want to open
+						//						startActivity(intent);
 						break;
 
 						/*
@@ -248,7 +245,7 @@ public class TagListView extends ListActivity {
 			dialog.show();
 		}
 	};
-	
+
 	public void changeTagName(String oldName, String newName) {
 
 		String encryptOldName = StaticBox.keyCrypto.encrypt(oldName);
@@ -276,7 +273,7 @@ public class TagListView extends ListActivity {
 			FileOutputStream fos = openFileOutput(StaticBox.TAG_FILE, Context.MODE_PRIVATE);
 			properties.store(fos, null);
 			fos.close();
-			
+
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -286,7 +283,7 @@ public class TagListView extends ListActivity {
 		}
 		loadTagList();
 	}
-	
+
 	public void deleleTag(String tagName) {
 
 		try {
@@ -309,13 +306,54 @@ public class TagListView extends ListActivity {
 			}
 
 			/*
-			 * Update number of identities
+			 * Update TAG_FILE
 			 */
-			properties.setProperty("n", String.valueOf(--n));
+			//			properties.setProperty("n", String.valueOf(--n));
 
 			FileOutputStream fos = openFileOutput(StaticBox.TAG_FILE, Context.MODE_PRIVATE);
 			properties.store(fos, null);
 			fos.close();
+
+			/*
+			 * Update tag in semantic
+			 */
+			fis = openFileInput(StaticBox.SEMANTIC_FILE);
+			properties = new Properties();
+			properties.load(fis);
+			fis.close();
+
+			n = Integer.parseInt(properties.getProperty("n"));
+
+			for (int i = 1; i <= n; i++) {
+				String s = properties.getProperty("s" + i);
+				if (s != null) {
+					fis = openFileInput("s" + s);
+					Properties properties2 = new Properties();
+					properties2.load(fis);
+					fis.close();
+
+					int m = Integer.parseInt(properties2.getProperty("n"));
+
+					for (int j = 1; j <= m; j++) {
+						String s2 = properties2.getProperty("t" + j);
+						if (s2 != null) {
+							s2 = StaticBox.keyCrypto.decrypt(s2);
+							if (s2.contains(tagName)) {
+								s2 = s2.replace(tagName + ", ", "");
+								s2 = s2.replace(", " + tagName, "");
+								s2 = s2.replace(tagName, "");
+								properties2.setProperty("t" + j, StaticBox.keyCrypto.encrypt(s2));
+							}
+						}
+					}
+					
+					fos = openFileOutput("s" + s, Context.MODE_PRIVATE);
+					properties2.store(fos, null);
+					fos.flush();
+					fos.close();
+
+				}
+			}
 
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
@@ -326,7 +364,7 @@ public class TagListView extends ListActivity {
 		}
 		loadTagList();
 	}
-	
+
 	public void editTagName(final String strName) {
 		AlertDialog.Builder alert = new AlertDialog.Builder(this);
 		alert.setTitle("Edit Tag");
