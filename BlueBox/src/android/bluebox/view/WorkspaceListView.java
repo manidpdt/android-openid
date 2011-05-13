@@ -116,39 +116,8 @@ public class WorkspaceListView extends Activity {
 						 * Delete
 						 */
 					case 2:
-
-						try {
-							/*
-							 * Delete workspace file
-							 */
-							deleteFile("w" + wsItem.getEncryptedName().trim());
-
-							/*
-							 * Delete workspace info in StaticValue.WORKSPACE_FILE
-							 */
-
-							FileInputStream fis = openFileInput(StaticBox.WORKSPACE_FILE);
-							Properties properties = new Properties();
-							properties.load(fis);
-							fis.close();
-
-							int id = wsItem.getId();
-							properties.remove("w" + id);
-//							properties.setProperty("n", String.valueOf(--numberOfWorkspaces));
-
-							FileOutputStream fos = openFileOutput(StaticBox.WORKSPACE_FILE, Context.MODE_PRIVATE);
-							properties.store(fos, null);
-							fos.flush();
-							fos.close();
-
-							refreshWorkspaceList();
-						} catch (FileNotFoundException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						} catch (IOException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
+						deleteWorkspace(wsItem);
+						break;
 					}
 				}
 			});
@@ -275,5 +244,84 @@ public class WorkspaceListView extends Activity {
 	protected void onResume() {
 		super.onResume();
 		refreshWorkspaceList();
+	}
+	
+	public void deleteWorkspace(WorkspaceItem wsItem) {
+		
+		try {
+			/*
+			 * Delete workspace file
+			 */
+			deleteFile("w" + wsItem.getEncryptedName().trim());
+
+			/*
+			 * Delete workspace info in StaticValue.WORKSPACE_FILE
+			 */
+
+			FileInputStream fis = openFileInput(StaticBox.WORKSPACE_FILE);
+			Properties properties = new Properties();
+			properties.load(fis);
+			fis.close();
+
+			int id = wsItem.getId();
+			properties.remove("w" + id);
+
+			FileOutputStream fos = openFileOutput(StaticBox.WORKSPACE_FILE, Context.MODE_PRIVATE);
+			properties.store(fos, null);
+			fos.flush();
+			fos.close();
+
+			refreshWorkspaceList();
+			
+			/*
+			 * Update tag in semantic
+			 */
+			
+			String workspaceName = wsItem.getName();
+			
+			fis = openFileInput(StaticBox.SEMANTIC_FILE);
+			properties = new Properties();
+			properties.load(fis);
+			fis.close();
+
+			int n = Integer.parseInt(properties.getProperty("n"));
+
+			for (int i = 1; i <= n; i++) {
+				String s = properties.getProperty("s" + i);
+				if (s != null) {
+					fis = openFileInput("s" + s);
+					Properties properties2 = new Properties();
+					properties2.load(fis);
+					fis.close();
+
+					int m = Integer.parseInt(properties2.getProperty("n"));
+
+					for (int j = 1; j <= m; j++) {
+						String s2 = properties2.getProperty("w" + j);
+						if (s2 != null) {
+							s2 = StaticBox.keyCrypto.decrypt(s2);
+							if (s2.contains(workspaceName)) {
+								s2 = s2.replace(workspaceName + ", ", "");
+								s2 = s2.replace(", " + workspaceName, "");
+								s2 = s2.replace(workspaceName, "");
+								properties2.setProperty("w" + j, StaticBox.keyCrypto.encrypt(s2));
+							}
+						}
+					}
+					
+					fos = openFileOutput("s" + s, Context.MODE_PRIVATE);
+					properties2.store(fos, null);
+					fos.flush();
+					fos.close();
+
+				}
+			}
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }

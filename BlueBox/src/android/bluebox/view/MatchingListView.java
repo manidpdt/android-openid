@@ -39,7 +39,7 @@ public class MatchingListView extends Activity {
 		lvMatching = (ListView) findViewById(R.id.ListOfMatching);
 		//		lvMatching.setOnItemClickListener(clickItem);
 
-		matchingList = analysis("01,1,username");
+		matchingList = analysis("01,1,id");
 		cba = new MatchingCustomBaseAdapter(this, matchingList);
 		lvMatching.setAdapter(cba);
 
