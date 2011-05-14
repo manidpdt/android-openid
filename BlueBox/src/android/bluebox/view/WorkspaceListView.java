@@ -99,7 +99,10 @@ public class WorkspaceListView extends Activity {
 					 * Connect
 					 */
 					case 0:
-						connectServer(wsItem.getName());
+						String hostIP = StaticBox.keyCrypto.decrypt(wsItem.getAccuracy());
+						if (NetworkBox.connectToHost(hostIP)) {
+							connectServer(wsItem.getName());	
+						}
 						break;
 
 						/*
@@ -325,9 +328,9 @@ public class WorkspaceListView extends Activity {
 	}
 
 	public void connectServer(String wsName) {
-		
+
 		final String name = wsName;
-		
+
 		AlertDialog.Builder alert = new AlertDialog.Builder(this);
 		alert.setTitle("Pair code");
 
@@ -344,21 +347,21 @@ public class WorkspaceListView extends Activity {
 				// TODO Auto-generated method stub
 				String IP = edtName.getText().toString().trim(); 
 				if (IP.length() > 0) {
-					
+
 					try {
 						FileInputStream fis = openFileInput("w" + StaticBox.keyCrypto.encrypt(name));
 						Properties properties = new Properties();
 						properties.load(fis);
 						fis.close();
-						
+
 						String hostIP = properties.getProperty("network");
 						if (hostIP != null) {
 							hostIP = StaticBox.keyCrypto.decrypt(hostIP);
 							boolean b = NetworkBox.connectToHost(hostIP);
 							if (b)
-								NetworkBox.sendMessage(NetworkBox.RESPONECONNECTING + ", " + edtName.getText().toString());
+								NetworkBox.sendMessage(NetworkBox.RESPONECONNECTING + ", " + edtName.getText().toString() + "<EOF>");
 						}
-						
+
 					} catch (FileNotFoundException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -366,7 +369,7 @@ public class WorkspaceListView extends Activity {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-					
+
 				} else {
 					Toast.makeText(getBaseContext(), "Please input pair code", Toast.LENGTH_SHORT).show();
 				}

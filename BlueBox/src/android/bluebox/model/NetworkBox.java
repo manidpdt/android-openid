@@ -16,20 +16,22 @@ public class NetworkBox extends Activity {
 	public static final String REQUESTCONNECTING = "2872";
 	public static final String RESPONECONNECTING = "1103";
 
-	public static int hostPort = 11000;
+	public static int hostPort = 7777;
 	
 	public static InetAddress host;
 	public static Socket socket;
 	public static DataInputStream dis;
 	public static DataOutputStream dos;
 	
-	public static boolean hostisFound = false;
+	public static boolean hostIsFound = false;
 	public static boolean isConnecting = false;
 
 	public static boolean findHost(String hostIP) {
 		
 //		String message = null;
+		hostIsFound = false;
 		try {
+			
 			host = InetAddress.getByName(hostIP);
 			socket = new Socket(host, hostPort);
 
@@ -44,7 +46,7 @@ public class NetworkBox extends Activity {
 			String message = dis.readLine();
 			
 			if (message.equals(WELCOMECONNECTING)) {
-				hostisFound = true;
+				hostIsFound = true;
 				return true;
 			}
 		} catch (UnknownHostException e) {
@@ -54,13 +56,12 @@ public class NetworkBox extends Activity {
 			e.printStackTrace();
 		}
 		return false;
-//		return false;
 	}
 	public static boolean connectToHost(String hostIP) {
-		if (!hostisFound)
+		if (!hostIsFound)
 			findHost(hostIP);
 		
-		if (!hostisFound) return false;
+		if (!hostIsFound) return false;
 		
 		String message = null;
 		
