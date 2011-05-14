@@ -16,6 +16,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.bluebox.R;
 import android.bluebox.model.CustomBaseAdapter;
+import android.bluebox.model.NetworkBox;
 import android.bluebox.model.StaticBox;
 import android.bluebox.model.WorkspaceItem;
 import android.content.Context;
@@ -29,6 +30,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -97,10 +99,7 @@ public class WorkspaceListView extends Activity {
 					 * Connect
 					 */
 					case 0:
-						String netInfos = StaticBox.keyCrypto.decrypt(wsItem.getAccuracy()).trim();
-						String[] netInfo = netInfos.split(":");
-						Toast.makeText(getBaseContext(), String.valueOf(StaticBox.connectToHost(netInfo[0], Integer.parseInt(netInfo[1]))), Toast.LENGTH_SHORT).show();
-						StaticBox.currentNetwork = netInfo[0];
+						connectServer(wsItem.getName());
 						break;
 
 						/*
@@ -169,7 +168,7 @@ public class WorkspaceListView extends Activity {
 			startActivity(intent);
 			finish();
 			break;
-		
+
 			/*
 			 * Create new workspace
 			 */
@@ -245,9 +244,9 @@ public class WorkspaceListView extends Activity {
 		super.onResume();
 		refreshWorkspaceList();
 	}
-	
+
 	public void deleteWorkspace(WorkspaceItem wsItem) {
-		
+
 		try {
 			/*
 			 * Delete workspace file
@@ -272,13 +271,13 @@ public class WorkspaceListView extends Activity {
 			fos.close();
 
 			refreshWorkspaceList();
-			
+
 			/*
 			 * Update tag in semantic
 			 */
-			
+
 			String workspaceName = wsItem.getName();
-			
+
 			fis = openFileInput(StaticBox.SEMANTIC_FILE);
 			properties = new Properties();
 			properties.load(fis);
@@ -308,7 +307,7 @@ public class WorkspaceListView extends Activity {
 							}
 						}
 					}
-					
+
 					fos = openFileOutput("s" + s, Context.MODE_PRIVATE);
 					properties2.store(fos, null);
 					fos.flush();
@@ -324,4 +323,64 @@ public class WorkspaceListView extends Activity {
 			e.printStackTrace();
 		}
 	}
+
+	public void connectServer(String wsName) {
+		
+		final String name = wsName;
+		
+		AlertDialog.Builder alert = new AlertDialog.Builder(this);
+		alert.setTitle("Pair code");
+
+		// Set an EditText view to get user Input
+		final EditText edtName = new EditText(this);
+		edtName.setText("");
+		alert.setView(edtName);
+		//						alert.setView(edtName);
+
+		alert.setPositiveButton("Connect", new DialogInterface.OnClickListener() {
+
+			@Override
+			public void onClick(DialogInterface dialog, int button) {
+				// TODO Auto-generated method stub
+				String IP = edtName.getText().toString().trim(); 
+				if (IP.length() > 0) {
+					
+					try {
+						FileInputStream fis = openFileInput("w" + StaticBox.keyCrypto.encrypt(name));
+						Properties properties = new Properties();
+						properties.load(fis);
+						fis.close();
+						
+						String hostIP = properties.getProperty("network");
+						if (hostIP != null) {
+							hostIP = StaticBox.keyCrypto.decrypt(hostIP);
+							boolean b = NetworkBox.connectToHost(hostIP);
+							if (b)
+								NetworkBox.sendMessage(NetworkBox.RESPONECONNECTING + ", " + edtName.getText().toString());
+						}
+						
+					} catch (FileNotFoundException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+				} else {
+					Toast.makeText(getBaseContext(), "Please input pair code", Toast.LENGTH_SHORT).show();
+				}
+			}
+		});
+
+		alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+
+			@Override
+			public void onClick(DialogInterface dialog, int button) {
+				// TODO Auto-generated method stub
+			}
+		});
+		alert.show();
+	}
+
 }
