@@ -249,7 +249,7 @@ public class WorkspaceDetailView extends Activity {
 		edtName.setText("192.168.0.103");
 		alert.setView(edtName);
 
-		alert.setPositiveButton("Change", new DialogInterface.OnClickListener() {
+		alert.setPositiveButton("Find", new DialogInterface.OnClickListener() {
 
 			@Override
 			public void onClick(DialogInterface dialog, int button) {
