@@ -4,17 +4,15 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.net.InetAddress;
-import java.net.Socket;
-import java.net.UnknownHostException;
 import java.util.Properties;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.bluebox.R;
+import android.bluebox.model.NetworkBox;
 import android.bluebox.model.StaticBox;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -30,7 +28,7 @@ public class WorkspaceDetailView extends Activity {
 
 	static int NEW_WORKSPACE = 0;
 	static int EDIT_WORKSPACE = 1;
-	
+
 	String workspaceName = "null";
 
 	LocationManager mlocManager = null;
@@ -39,8 +37,7 @@ public class WorkspaceDetailView extends Activity {
 	String strLattitude = null;
 	String strLongitude = null;
 
-	String hostIP = "10.0.2.2";
-	int hostPort = 7777;
+	String hostIP;
 
 	EditText edtName;
 
@@ -61,7 +58,7 @@ public class WorkspaceDetailView extends Activity {
 		/*
 		 * Check if we create a new workspace or edit one
 		 */
-		
+
 		edtName = (EditText) findViewById(R.id.wsd_edt_name);
 		edtName.setText("");
 
@@ -81,24 +78,24 @@ public class WorkspaceDetailView extends Activity {
 
 		btnCancel = (Button) findViewById(R.id.wsd_btn_canel);
 		btnCancel.setOnClickListener(cancel);
-		
+
 		/*
 		 * Load data if editing
 		 */
 		workspaceName = this.getIntent().getExtras().getString("WorkspaceName");
-		
+
 		if (workspaceName != "null") {
-			
+
 			try {
 				FileInputStream fis = openFileInput("w" + workspaceName);
 				Properties properties = new Properties();
 				properties.load(fis);
 				fis.close();
-				
+
 				edtName.setText(StaticBox.keyCrypto.decrypt(workspaceName));
-				txtNetwork.setText(StaticBox.keyCrypto.decrypt(properties.getProperty("network")));
-				txtLocation.setText(StaticBox.keyCrypto.decrypt(properties.getProperty("gps")));
-				
+				txtNetwork.setText(StaticBox.keyCrypto.decrypt(StaticBox.keyCrypto.decrypt(properties.getProperty("network"))));
+				txtLocation.setText(StaticBox.keyCrypto.decrypt(StaticBox.keyCrypto.decrypt(properties.getProperty("gps"))));
+
 			} catch (FileNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -157,7 +154,7 @@ public class WorkspaceDetailView extends Activity {
 		@Override
 		public void onClick(View arg0) {
 			// TODO Auto-generated method stub
-			StaticBox.connectToHost(hostIP, hostPort);
+			findServer();
 		}
 	};
 
@@ -167,11 +164,11 @@ public class WorkspaceDetailView extends Activity {
 		public void onClick(View arg0) {
 			// TODO Auto-generated method stub
 			if (edtName.equals("")) {
-				Toast.makeText(getBaseContext(), "Enter name of workspace", Toast.LENGTH_LONG).show();
+				Toast.makeText(getBaseContext(), "Enter name of workspace", Toast.LENGTH_SHORT).show();
 				return;
 			}
 			String newWorkspaceName = StaticBox.keyCrypto.encrypt(edtName.getText().toString());
-			
+
 			/*
 			 * Neu tao workspace moi ma da co roi thi bao loi va ngung lai
 			 */
@@ -189,7 +186,7 @@ public class WorkspaceDetailView extends Activity {
 					e.printStackTrace();
 				}
 			}
-			
+
 			/*
 			 * Tao file moi
 			 */
@@ -210,10 +207,10 @@ public class WorkspaceDetailView extends Activity {
 				fos.close();
 
 				fos = openFileOutput("w" + newWorkspaceName.trim(), Context.MODE_PRIVATE);
-				
+
 				properties = new Properties();
 				properties.setProperty("header", StaticBox.keyCrypto.getMD5Key());
-				properties.setProperty("network", StaticBox.keyCrypto.encrypt(hostIP + ":" + hostPort));
+				properties.setProperty("network", StaticBox.keyCrypto.encrypt(hostIP));
 				properties.setProperty("gps", StaticBox.keyCrypto.encrypt(strLattitude + ":" + strLongitude));
 				properties.store(fos, null);
 
@@ -241,4 +238,47 @@ public class WorkspaceDetailView extends Activity {
 			finish();
 		}
 	};
+
+	public void findServer() {
+		AlertDialog.Builder alert = new AlertDialog.Builder(this);
+		alert.setTitle("Find server");
+		alert.setMessage("Server IP");
+
+		// Set an EditText view to get user Input
+		final EditText edtName = new EditText(this);
+		edtName.setText("192.168.0.103");
+		alert.setView(edtName);
+
+		alert.setPositiveButton("Change", new DialogInterface.OnClickListener() {
+
+			@Override
+			public void onClick(DialogInterface dialog, int button) {
+				// TODO Auto-generated method stub
+				String IP = edtName.getText().toString().trim(); 
+				if (IP.length() > 0) {
+					boolean b = NetworkBox.findHost(IP);
+//					Toast.makeText(getBaseContext(), b, Toast.LENGTH_SHORT).show();
+					if (b) {
+						Toast.makeText(getBaseContext(), "Server found", Toast.LENGTH_SHORT).show();
+						hostIP = IP;
+						txtNetwork.setText(hostIP);
+					} else {
+						Toast.makeText(getBaseContext(), "Server not found", Toast.LENGTH_SHORT).show();
+					}					
+				} else {
+					Toast.makeText(getBaseContext(), "Please input server IP", Toast.LENGTH_SHORT).show();
+				}
+			}
+		});
+
+		alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+
+			@Override
+			public void onClick(DialogInterface dialog, int button) {
+				// TODO Auto-generated method stub
+			}
+		});
+		alert.show();
+	}
+	
 }
