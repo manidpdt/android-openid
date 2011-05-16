@@ -8,6 +8,8 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 
 import android.app.Activity;
+import android.content.Context;
+import android.widget.Toast;
 
 public class NetworkBox extends Activity {
 
@@ -15,99 +17,114 @@ public class NetworkBox extends Activity {
 	public static final String WELCOMECONNECTING = "6593";
 	public static final String REQUESTCONNECTING = "2872";
 	public static final String RESPONECONNECTING = "1103";
+	public static final String RESPONEPAIRCODE = "3943";
+	
 
 	public static int hostPort = 7777;
-	
+	public static String hostIP = "192.168.0.100";
+
 	public static InetAddress host;
 	public static Socket socket;
 	public static DataInputStream dis;
 	public static DataOutputStream dos;
-	
+
 	public static boolean hostIsFound = false;
 	public static boolean isConnecting = false;
 
-	public static boolean findHost(String hostIP) {
-		
-//		String message = null;
-		hostIsFound = false;
+	public static void setHostIP(String IP) {
+		hostIP = IP;
+	}
+
+	public static boolean connect(String IP) {
+			setHostIP(IP);
+			return connect();
+	}
+	
+	public static boolean connect() {
 		try {
-			
 			host = InetAddress.getByName(hostIP);
 			socket = new Socket(host, hostPort);
 
 			socket.setSoTimeout(5000);
-			
-			dos = new DataOutputStream(
-					socket.getOutputStream());
-			dos.writeBytes(REQUESTWELCOME + "<EOF>");
 
-			dis = new DataInputStream(
-					socket.getInputStream());
-			String message = dis.readLine();
-			
-			if (message.equals(WELCOMECONNECTING)) {
-				hostIsFound = true;
-				return true;
-			}
+			dos = new DataOutputStream(socket.getOutputStream());
+			dis = new DataInputStream(socket.getInputStream());
+
+			isConnecting = true;
+			return true;
 		} catch (UnknownHostException e) {
-//			return false;
+			isConnecting = false;
+			return false;
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			isConnecting = false;
+			return false;
 		}
-		return false;
 	}
-	public static boolean connectToHost(String hostIP) {
-		if (!hostIsFound)
-			findHost(hostIP);
-		
-		if (!hostIsFound) return false;
-		
-		String message = null;
-		
+
+	public static void disconect() {
 		try {
-			sendMessage(REQUESTCONNECTING + "<EOF>");
-			message = recieveMessage();
-
-			if (message.equals(RESPONECONNECTING)) {
-				return true;
-			}
-
-			dis.close();
-			dos.close();
-
-		} catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			isConnecting = false;
+			if (dos!= null) dos.close();
+			if (dis!= null) dis.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
+			isConnecting = false;
 			e.printStackTrace();
 		}
+	}
 
+	public static boolean findHost(Context context, String hostIP) {
+
+		connect();
+
+		boolean b = sendMessage(REQUESTWELCOME + "<EOF>");
+		
+		Toast.makeText(context, String.valueOf(b), Toast.LENGTH_SHORT).show();
+		
+		String message = recieveMessage();
+
+		Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+
+		if (message != null && message.trim().equals(WELCOMECONNECTING)) {
+			hostIsFound = true;
+			return true;
+		}
 		return false;
 	}
-	
-	public static boolean sendMessage(String str) {
-		if (!isConnecting) return false;
+	public static boolean connectToHost(Context context, String hostIP) {
 		
+		connect();
+		
+		sendMessage(REQUESTCONNECTING + "<EOF>");
+
+		String message = recieveMessage();
+		Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+		if (message != null && message.trim().equals(RESPONECONNECTING)) {
+			return true;
+		}
+		return false;
+	}
+
+	public static boolean sendMessage(String str) {
+
 		try {
 			dos.writeBytes(str);
+			dos.flush();
 			return true;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		return false;
 	}
-	
+
 	public static String recieveMessage() {
-		if (!isConnecting) return null;
-		
+
 		try {
 			byte[] b = new byte[1024];
 			dis.read(b);
-			
+
 			return new String(b);
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
@@ -117,6 +134,10 @@ public class NetworkBox extends Activity {
 			e.printStackTrace();
 		}
 		return null;
-		
+	}
+	
+	public static void sendPairCode(String str) {
+		connect();
+		sendMessage(RESPONEPAIRCODE + "," + str +  "<EOF>");
 	}
 }

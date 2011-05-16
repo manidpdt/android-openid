@@ -37,7 +37,7 @@ public class WorkspaceDetailView extends Activity {
 	String strLattitude = null;
 	String strLongitude = null;
 
-	String hostIP;
+	String hostIP = "";
 
 	EditText edtName;
 
@@ -163,7 +163,7 @@ public class WorkspaceDetailView extends Activity {
 		@Override
 		public void onClick(View arg0) {
 			// TODO Auto-generated method stub
-			if (edtName.equals("")) {
+			if (edtName.getText().equals("")) {
 				Toast.makeText(getBaseContext(), "Enter name of workspace", Toast.LENGTH_SHORT).show();
 				return;
 			}
@@ -246,7 +246,7 @@ public class WorkspaceDetailView extends Activity {
 
 		// Set an EditText view to get user Input
 		final EditText edtName = new EditText(this);
-		edtName.setText("192.168.0.103");
+		edtName.setText(NetworkBox.hostIP);
 		alert.setView(edtName);
 
 		alert.setPositiveButton("Find", new DialogInterface.OnClickListener() {
@@ -256,8 +256,7 @@ public class WorkspaceDetailView extends Activity {
 				// TODO Auto-generated method stub
 				String IP = edtName.getText().toString().trim(); 
 				if (IP.length() > 0) {
-					boolean b = NetworkBox.findHost(IP);
-//					Toast.makeText(getBaseContext(), b, Toast.LENGTH_SHORT).show();
+					boolean b = NetworkBox.findHost(getBaseContext(), IP);
 					if (b) {
 						Toast.makeText(getBaseContext(), "Server found", Toast.LENGTH_SHORT).show();
 						hostIP = IP;
