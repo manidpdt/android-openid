@@ -21,18 +21,18 @@ import android.bluebox.model.StaticBox;
 import android.bluebox.model.WorkspaceItem;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
+import android.content.DialogInterface.OnClickListener;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
+import android.widget.AdapterView.OnItemClickListener;
 
 public class WorkspaceListView extends Activity {
 
@@ -352,8 +352,6 @@ public class WorkspaceListView extends Activity {
 
 	public void connectServer(String wsName) {
 
-		final String name = wsName;
-
 		AlertDialog.Builder alert = new AlertDialog.Builder(this);
 		alert.setTitle("Pair code");
 
@@ -370,8 +368,8 @@ public class WorkspaceListView extends Activity {
 				// TODO Auto-generated method stub
 				String code = edtName.getText().toString().trim(); 
 				if (code.length() > 0) {
-					NetworkBox.sendPairCode(edtName.getText().toString());
-
+					boolean b = NetworkBox.sendPairCode(edtName.getText().toString());
+					Toast.makeText(getBaseContext(), String.valueOf(b), Toast.LENGTH_SHORT).show();
 				} else {
 					Toast.makeText(getBaseContext(), "Please input pair code", Toast.LENGTH_SHORT).show();
 				}

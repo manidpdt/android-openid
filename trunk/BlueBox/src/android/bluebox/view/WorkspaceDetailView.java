@@ -47,7 +47,6 @@ public class WorkspaceDetailView extends Activity {
 	Button btnGetLocation;
 	TextView txtLocation;
 
-
 	Button btnSave;
 	Button btnCancel;
 
@@ -93,8 +92,12 @@ public class WorkspaceDetailView extends Activity {
 				fis.close();
 
 				edtName.setText(StaticBox.keyCrypto.decrypt(workspaceName));
-				txtNetwork.setText(StaticBox.keyCrypto.decrypt(StaticBox.keyCrypto.decrypt(properties.getProperty("network"))));
-				txtLocation.setText(StaticBox.keyCrypto.decrypt(StaticBox.keyCrypto.decrypt(properties.getProperty("gps"))));
+				txtNetwork.setText(StaticBox.keyCrypto
+						.decrypt(StaticBox.keyCrypto.decrypt(properties
+								.getProperty("network"))));
+				txtLocation.setText(StaticBox.keyCrypto
+						.decrypt(StaticBox.keyCrypto.decrypt(properties
+								.getProperty("gps"))));
 
 			} catch (FileNotFoundException e) {
 				// TODO Auto-generated catch block
@@ -143,7 +146,8 @@ public class WorkspaceDetailView extends Activity {
 		@Override
 		public void onClick(View arg0) {
 			mlocManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-			mlocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, mlocListener);
+			mlocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0,
+					0, mlocListener);
 			txtLocation.setText("Lattitude = " + strLattitude + "\n"
 					+ "Longitude = " + strLongitude);
 		}
@@ -164,28 +168,33 @@ public class WorkspaceDetailView extends Activity {
 		public void onClick(View arg0) {
 			// TODO Auto-generated method stub
 			if (edtName.getText().equals("")) {
-				Toast.makeText(getBaseContext(), "Enter name of workspace", Toast.LENGTH_SHORT).show();
+				Toast.makeText(getBaseContext(), "Enter name of workspace",
+						Toast.LENGTH_SHORT).show();
 				return;
 			}
-			String newWorkspaceName = StaticBox.keyCrypto.encrypt(edtName.getText().toString());
+			String newWorkspaceName = StaticBox.keyCrypto.encrypt(edtName
+					.getText().toString());
 
 			/*
 			 * Neu tao workspace moi ma da co roi thi bao loi va ngung lai
 			 */
-			if (workspaceName.equals("null")) {
-				try {
-					FileInputStream fis = openFileInput("w" + newWorkspaceName);
-					if (fis != null) fis.close();
-					Toast.makeText(getBaseContext(), "This workspace name existed", Toast.LENGTH_SHORT).show();
-					return;
-				} catch (FileNotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
+//			if (workspaceName.equals("null")) {
+//				try {
+// 					FileInputStream fis = openFileInput("w" + newWorkspaceName);
+//					if (fis != null)
+//						fis.close();
+//					Toast.makeText(getBaseContext(),
+//							"This workspace name existed", Toast.LENGTH_SHORT)
+//							.show();
+//					return;
+//				} catch (FileNotFoundException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				} catch (IOException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
+//			}
 
 			/*
 			 * Tao file moi
@@ -196,7 +205,8 @@ public class WorkspaceDetailView extends Activity {
 				properties.load(fis);
 				fis.close();
 
-				FileOutputStream fos = openFileOutput(StaticBox.WORKSPACE_FILE, Context.MODE_PRIVATE);
+				FileOutputStream fos = openFileOutput(StaticBox.WORKSPACE_FILE,
+						Context.MODE_PRIVATE);
 
 				int n = Integer.valueOf(properties.getProperty("n"));
 				properties.setProperty("n", String.valueOf(++n));
@@ -209,20 +219,26 @@ public class WorkspaceDetailView extends Activity {
 				fos = openFileOutput("w" + newWorkspaceName.trim(), Context.MODE_PRIVATE);
 
 				properties = new Properties();
-				properties.setProperty("header", StaticBox.keyCrypto.getMD5Key());
-				properties.setProperty("network", StaticBox.keyCrypto.encrypt(hostIP));
-				properties.setProperty("gps", StaticBox.keyCrypto.encrypt(strLattitude + ":" + strLongitude));
+				properties.setProperty("header", StaticBox.keyCrypto
+						.getMD5Key());
+				properties.setProperty("network", StaticBox.keyCrypto
+						.encrypt(hostIP));
+				properties.setProperty("gps", StaticBox.keyCrypto
+						.encrypt(strLattitude + ":" + strLongitude));
 				properties.store(fos, null);
 
 				fos.flush();
 				fos.close();
 
-				Toast.makeText(getBaseContext(), "Workspace Saved", Toast.LENGTH_LONG).show();
+				Toast.makeText(getBaseContext(), "Workspace Saved",
+						Toast.LENGTH_LONG).show();
 				finish();
 
 			} catch (FileNotFoundException e) {
 				// TODO Auto-generated catch block
-				Toast.makeText(getBaseContext(), "Can not create file " + newWorkspaceName, Toast.LENGTH_LONG).show();
+				Toast.makeText(getBaseContext(),
+						"Can not create file " + newWorkspaceName,
+						Toast.LENGTH_LONG).show();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -254,30 +270,34 @@ public class WorkspaceDetailView extends Activity {
 			@Override
 			public void onClick(DialogInterface dialog, int button) {
 				// TODO Auto-generated method stub
-				String IP = edtName.getText().toString().trim(); 
+				String IP = edtName.getText().toString().trim();
 				if (IP.length() > 0) {
 					boolean b = NetworkBox.findHost(getBaseContext(), IP);
 					if (b) {
-						Toast.makeText(getBaseContext(), "Server found", Toast.LENGTH_SHORT).show();
+						Toast.makeText(getBaseContext(), "Server found",
+								Toast.LENGTH_SHORT).show();
 						hostIP = IP;
 						txtNetwork.setText(hostIP);
 					} else {
-						Toast.makeText(getBaseContext(), "Server not found", Toast.LENGTH_SHORT).show();
-					}					
+						Toast.makeText(getBaseContext(), "Server not found",
+								Toast.LENGTH_SHORT).show();
+					}
 				} else {
-					Toast.makeText(getBaseContext(), "Please input server IP", Toast.LENGTH_SHORT).show();
+					Toast.makeText(getBaseContext(), "Please input server IP",
+							Toast.LENGTH_SHORT).show();
 				}
 			}
 		});
 
-		alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+		alert.setNegativeButton("Cancel",
+				new DialogInterface.OnClickListener() {
 
-			@Override
-			public void onClick(DialogInterface dialog, int button) {
-				// TODO Auto-generated method stub
-			}
-		});
+					@Override
+					public void onClick(DialogInterface dialog, int button) {
+						// TODO Auto-generated method stub
+					}
+				});
 		alert.show();
 	}
-	
+
 }
