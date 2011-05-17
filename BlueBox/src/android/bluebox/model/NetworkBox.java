@@ -8,6 +8,7 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 
 import android.app.Activity;
+import android.bluebox.view.ListenThread;
 import android.content.Context;
 import android.widget.Toast;
 
@@ -17,11 +18,15 @@ public class NetworkBox extends Activity {
 	public static final String WELCOMECONNECTING = "6593";
 	public static final String REQUESTCONNECTING = "2872";
 	public static final String RESPONECONNECTING = "1103";
-	public static final String RESPONEPAIRCODE = "3943";
+	public static final String REQUESTPAIRCODE = "3943";
+	public static final String RESPONEPAIRCODE = "5292";
 	
-
+	public static String PAIRCODE = "";
+	
+	public static final String SEPERATECHAR = ",";
+	
 	public static int hostPort = 7777;
-	public static String hostIP = "192.168.0.100";
+	public static String hostIP = "192.168.0.105";
 
 	public static InetAddress host;
 	public static Socket socket;
@@ -41,6 +46,7 @@ public class NetworkBox extends Activity {
 	}
 	
 	public static boolean connect() {
+		
 		try {
 			host = InetAddress.getByName(hostIP);
 			socket = new Socket(host, hostPort);
@@ -75,9 +81,9 @@ public class NetworkBox extends Activity {
 
 	public static boolean findHost(Context context, String hostIP) {
 
-		connect();
+		connect(hostIP);
 
-		boolean b = sendMessage(REQUESTWELCOME + "<EOF>");
+		boolean b = sendMessage(REQUESTWELCOME);
 		
 		Toast.makeText(context, String.valueOf(b), Toast.LENGTH_SHORT).show();
 		
@@ -95,7 +101,7 @@ public class NetworkBox extends Activity {
 		
 		connect();
 		
-		sendMessage(REQUESTCONNECTING + "<EOF>");
+		sendMessage(REQUESTCONNECTING);
 
 		String message = recieveMessage();
 		Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
@@ -108,7 +114,7 @@ public class NetworkBox extends Activity {
 	public static boolean sendMessage(String str) {
 
 		try {
-			dos.writeBytes(str);
+			dos.writeBytes(PAIRCODE + SEPERATECHAR + str + "<EOF>");
 			dos.flush();
 			return true;
 		} catch (IOException e) {
@@ -124,8 +130,9 @@ public class NetworkBox extends Activity {
 		try {
 			byte[] b = new byte[1024];
 			dis.read(b);
-
-			return new String(b);
+			String s = new String (b);
+			s = s.substring(PAIRCODE.length() + 1);
+			return s;
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -136,8 +143,21 @@ public class NetworkBox extends Activity {
 		return null;
 	}
 	
-	public static void sendPairCode(String str) {
+	public static boolean sendPairCode(String str) {
 		connect();
-		sendMessage(RESPONEPAIRCODE + "," + str +  "<EOF>");
+		sendMessage(REQUESTPAIRCODE + SEPERATECHAR + str);
+		
+		String message = recieveMessage();
+		
+		if (message != null && message.trim().equals(RESPONEPAIRCODE)) {
+			PAIRCODE = str;
+			connect();
+			Thread listenThread = new Thread(new ListenThread());
+			
+			listenThread.start();
+			return true;
+		}
+		
+		return false;
 	}
 }
