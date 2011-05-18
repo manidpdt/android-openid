@@ -91,6 +91,8 @@ public class InitPasswordView extends Activity {
 		if(resultCode == RESULT_OK) //all done
 		{
 			this.setResult(RESULT_OK);
+			Intent intent = new Intent(InitPasswordView.this, LoginView.class);
+			startActivity(intent);
 			this.finish();
 		}
 	}

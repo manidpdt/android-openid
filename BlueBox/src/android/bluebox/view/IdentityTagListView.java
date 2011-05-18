@@ -30,7 +30,7 @@ import android.widget.AdapterView.OnItemClickListener;
 public class IdentityTagListView extends ListActivity {
 	ListView lvTag;
 
-	ArrayList<String> tagList;
+	ArrayList<String> tagList = new ArrayList<String>();
 
 	int numberOfTag;
 
@@ -59,8 +59,10 @@ public class IdentityTagListView extends ListActivity {
 			fis.close();
 
 			String rawTagList = StaticBox.keyCrypto.decrypt(properties.getProperty("t" + idIdentity));
-			String[] rawTagLists = rawTagList.split(", ");
-			tagList = new ArrayList<String>(Arrays.asList(rawTagLists));
+			if (!rawTagList.trim().equals("")) {
+				String[] rawTagLists = rawTagList.split(", ");
+				tagList = new ArrayList<String>(Arrays.asList(rawTagLists));
+			}
 
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
@@ -191,7 +193,7 @@ public class IdentityTagListView extends ListActivity {
 			// TODO Auto-generated method stub
 			final String strName = ((TextView) view).getText().toString();
 
-			final CharSequence[] tagListOption = {"Remove tag"};
+			final CharSequence[] tagListOption = {"Open tag", "Remove tag"};
 
 			AlertDialog.Builder builder = new AlertDialog.Builder(IdentityTagListView.this);
 			builder.setTitle(strName + " Options");
@@ -206,7 +208,11 @@ public class IdentityTagListView extends ListActivity {
 					 */
 					switch(item) {
 					case 0:
+						break;
+						
+					case 1:
 						removeTag(strName);
+						break;
 					}
 				}
 			});

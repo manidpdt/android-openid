@@ -55,7 +55,7 @@ public class InitQuestionView extends Activity {
 			b.putString("remind", remind);
 			iInitConfiguration.putExtras(b);
 
-			startActivity(iInitConfiguration);
+			startActivityForResult(iInitConfiguration, RESULT_OK);
 		}
 	};
 

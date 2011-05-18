@@ -13,6 +13,7 @@ import android.app.AlertDialog;
 import android.bluebox.R;
 import android.bluebox.model.IdCustomBaseAdapter;
 import android.bluebox.model.IdentityItem;
+import android.bluebox.model.NetworkBox;
 import android.bluebox.model.StaticBox;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -408,13 +409,19 @@ public class IdentityListView extends Activity {
 
 	public boolean sendIdentity(IdentityItem idItem) {
 
-		/*
-		 * Write to log file
-		 */
-		Calendar cal = Calendar.getInstance();
-		int hour24 = cal.get(Calendar.HOUR_OF_DAY);
-
 		try {
+			
+			/*
+			 * Send data to server
+			 */
+			NetworkBox.sendToHost(idItem.getName());
+			
+			/*
+			 * Write to log file
+			 */
+			Calendar cal = Calendar.getInstance();
+			int hour24 = cal.get(Calendar.HOUR_OF_DAY);
+			
 			FileInputStream fis = openFileInput(StaticBox.LOG_FILE);
 			Properties properties = new Properties();
 			properties.load(fis);

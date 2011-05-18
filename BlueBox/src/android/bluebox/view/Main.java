@@ -21,7 +21,7 @@ public class Main extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 		
-//		intent = new Intent(Main.this, InitPasswordView.class);
+		intent = new Intent(Main.this, InitPasswordView.class);
 		if (checkExistedFile()) {
 			intent = new Intent(Main.this, LoginView.class);
 		} else {

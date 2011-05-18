@@ -8,7 +8,6 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 
 import android.app.Activity;
-import android.bluebox.view.ListenThread;
 import android.content.Context;
 import android.widget.Toast;
 
@@ -20,13 +19,16 @@ public class NetworkBox extends Activity {
 	public static final String RESPONECONNECTING = "1103";
 	public static final String REQUESTPAIRCODE = "3943";
 	public static final String RESPONEPAIRCODE = "5292";
+	private static final String RESPONECONTENT = "1155";
+	
+	private static final String FILLFIELD = "FIELD";
 	
 	public static String PAIRCODE = "";
 	
 	public static final String SEPERATECHAR = ",";
 	
 	public static int hostPort = 7777;
-	public static String hostIP = "192.168.0.105";
+	public static String hostIP = "192.168.0.100";
 
 	public static InetAddress host;
 	public static Socket socket;
@@ -49,7 +51,11 @@ public class NetworkBox extends Activity {
 		
 		try {
 			host = InetAddress.getByName(hostIP);
+			
 			socket = new Socket(host, hostPort);
+			
+			if (!socket.isConnected())
+				return false;
 
 			socket.setSoTimeout(5000);
 
@@ -99,7 +105,8 @@ public class NetworkBox extends Activity {
 	}
 	public static boolean connectToHost(Context context, String hostIP) {
 		
-		connect();
+		if (!connect())
+			return false;
 		
 		sendMessage(REQUESTCONNECTING);
 
@@ -113,6 +120,9 @@ public class NetworkBox extends Activity {
 
 	public static boolean sendMessage(String str) {
 
+//		if (!connect())
+//			return false;
+		
 		try {
 			dos.writeBytes(PAIRCODE + SEPERATECHAR + str + "<EOF>");
 			dos.flush();
@@ -144,20 +154,28 @@ public class NetworkBox extends Activity {
 	}
 	
 	public static boolean sendPairCode(String str) {
-		connect();
+		if (!connect())
+			return false;
+		
 		sendMessage(REQUESTPAIRCODE + SEPERATECHAR + str);
 		
 		String message = recieveMessage();
 		
 		if (message != null && message.trim().equals(RESPONEPAIRCODE)) {
 			PAIRCODE = str;
-			connect();
-			Thread listenThread = new Thread(new ListenThread());
-			
-			listenThread.start();
+//			connect();
+//			Thread listenThread = new Thread(new ListenThread());
+//			listenThread.start();
 			return true;
 		}
 		
 		return false;
+	}
+	
+	public static boolean sendToHost(String str) {
+		if (!connect())
+			return false;
+		
+		return sendMessage(RESPONECONTENT + SEPERATECHAR + FILLFIELD + SEPERATECHAR + str);
 	}
 }

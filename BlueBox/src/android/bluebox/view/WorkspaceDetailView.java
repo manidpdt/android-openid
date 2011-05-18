@@ -83,7 +83,7 @@ public class WorkspaceDetailView extends Activity {
 		 */
 		workspaceName = this.getIntent().getExtras().getString("WorkspaceName");
 
-		if (workspaceName != "null") {
+		if (!workspaceName.equals("null")) {
 
 			try {
 				FileInputStream fis = openFileInput("w" + workspaceName);
@@ -92,12 +92,8 @@ public class WorkspaceDetailView extends Activity {
 				fis.close();
 
 				edtName.setText(StaticBox.keyCrypto.decrypt(workspaceName));
-				txtNetwork.setText(StaticBox.keyCrypto
-						.decrypt(StaticBox.keyCrypto.decrypt(properties
-								.getProperty("network"))));
-				txtLocation.setText(StaticBox.keyCrypto
-						.decrypt(StaticBox.keyCrypto.decrypt(properties
-								.getProperty("gps"))));
+				txtNetwork.setText(StaticBox.keyCrypto.decrypt(properties.getProperty("network")));
+				txtLocation.setText(StaticBox.keyCrypto.decrypt(properties.getProperty("gps")));
 
 			} catch (FileNotFoundException e) {
 				// TODO Auto-generated catch block
@@ -167,7 +163,7 @@ public class WorkspaceDetailView extends Activity {
 		@Override
 		public void onClick(View arg0) {
 			// TODO Auto-generated method stub
-			if (edtName.getText().equals("")) {
+			if (edtName.getText().toString().equals("")) {
 				Toast.makeText(getBaseContext(), "Enter name of workspace",
 						Toast.LENGTH_SHORT).show();
 				return;
@@ -178,23 +174,23 @@ public class WorkspaceDetailView extends Activity {
 			/*
 			 * Neu tao workspace moi ma da co roi thi bao loi va ngung lai
 			 */
-//			if (workspaceName.equals("null")) {
-//				try {
-// 					FileInputStream fis = openFileInput("w" + newWorkspaceName);
-//					if (fis != null)
-//						fis.close();
-//					Toast.makeText(getBaseContext(),
-//							"This workspace name existed", Toast.LENGTH_SHORT)
-//							.show();
-//					return;
-//				} catch (FileNotFoundException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				} catch (IOException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}
-//			}
+			if (workspaceName.equals("null")) {
+				try {
+					FileInputStream fis = openFileInput("w" + newWorkspaceName.trim());
+					if (fis != null)
+						fis.close();
+					Toast.makeText(getBaseContext(),
+							"This workspace name existed", Toast.LENGTH_SHORT)
+							.show();
+					return;
+				} catch (FileNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 
 			/*
 			 * Tao file moi
@@ -205,17 +201,30 @@ public class WorkspaceDetailView extends Activity {
 				properties.load(fis);
 				fis.close();
 
-				FileOutputStream fos = openFileOutput(StaticBox.WORKSPACE_FILE,
-						Context.MODE_PRIVATE);
-
+				FileOutputStream fos = openFileOutput(StaticBox.WORKSPACE_FILE, Context.MODE_PRIVATE);
 				int n = Integer.valueOf(properties.getProperty("n"));
-				properties.setProperty("n", String.valueOf(++n));
-				properties.setProperty("w" + n, newWorkspaceName);
+				
+				if (workspaceName.equals("null")) {
+					
+					properties.setProperty("n", String.valueOf(++n));
+					properties.setProperty("w" + n, newWorkspaceName);
+
+				} else {
+					for (int i = 1; i <= n; i++) {
+						String s = properties.getProperty("w" + i);
+						if (s != null && s.trim().equals(workspaceName)) {
+							deleteFile("w" + workspaceName);
+							properties.setProperty("w" + i, newWorkspaceName);
+							break;
+						}
+					}
+				}
+				
 				properties.store(fos, null);
 
 				fos.flush();
 				fos.close();
-
+				
 				fos = openFileOutput("w" + newWorkspaceName.trim(), Context.MODE_PRIVATE);
 
 				properties = new Properties();
@@ -292,11 +301,11 @@ public class WorkspaceDetailView extends Activity {
 		alert.setNegativeButton("Cancel",
 				new DialogInterface.OnClickListener() {
 
-					@Override
-					public void onClick(DialogInterface dialog, int button) {
-						// TODO Auto-generated method stub
-					}
-				});
+			@Override
+			public void onClick(DialogInterface dialog, int button) {
+				// TODO Auto-generated method stub
+			}
+		});
 		alert.show();
 	}
 
