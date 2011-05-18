@@ -5,10 +5,14 @@
 package android.bluebox.view;
 
 
+import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Properties;
 
@@ -23,6 +27,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.DialogInterface.OnClickListener;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -41,6 +46,8 @@ public class WorkspaceListView extends Activity {
 	ListView lvWorkspace;
 	ArrayList<WorkspaceItem> workspaceList;
 	CustomBaseAdapter cba;
+	
+	Intent intent;
 
 	int numberOfWorkspaces;
 
@@ -59,6 +66,7 @@ public class WorkspaceListView extends Activity {
 		cba = new CustomBaseAdapter(this, workspaceList);
 		lvWorkspace.setAdapter(cba);
 
+		intent = new Intent (WorkspaceListView.this, SemanticListView.class);
 	}
 
 	/*
@@ -369,6 +377,8 @@ public class WorkspaceListView extends Activity {
 				String code = edtName.getText().toString().trim(); 
 				if (code.length() > 0) {
 					boolean b = NetworkBox.sendPairCode(edtName.getText().toString());
+					if (b)
+						new ListeningMessage().execute();
 					Toast.makeText(getBaseContext(), String.valueOf(b), Toast.LENGTH_SHORT).show();
 				} else {
 					Toast.makeText(getBaseContext(), "Please input pair code", Toast.LENGTH_SHORT).show();
@@ -385,5 +395,71 @@ public class WorkspaceListView extends Activity {
 		});
 		alert.show();
 	}
+	
+	public class ListeningMessage extends AsyncTask<Void, Void, Void> {
 
+		private final String REQUESTFILL = "1234";
+		
+		ServerSocket server;
+		
+		public DataInputStream dis;
+		
+		protected void onPreExecute() {
+			try {
+				server = new ServerSocket(NetworkBox.hostPort + 10);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		@Override
+		protected Void doInBackground(Void... arg0) {
+			// TODO Auto-generated method stub
+			while (true) {
+				try {
+					Socket socket = server.accept();
+					dis = new DataInputStream(socket.getInputStream());
+					String message = this.recieveMessage();
+					
+					if (message != null) {
+						
+						startActivity(intent);
+					}
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+		
+		protected void onPostExecute(final Void unused) {
+			try {
+				server.close();
+				dis.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		protected String recieveMessage() {
+			try {
+				byte[] b = new byte[1024];
+				dis.read(b);
+				String s = new String (b);
+				s = s.substring(NetworkBox.getPairCode().length() + 1);
+				return s;
+			} catch (UnknownHostException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return null;
+		}
+		
+	}
+	
 }
