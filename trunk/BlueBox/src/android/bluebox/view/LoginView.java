@@ -3,11 +3,14 @@ package android.bluebox.view;
 import java.io.FileNotFoundException;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.bluebox.R;
 import android.bluebox.model.KeyCrypto;
+import android.bluebox.model.NetworkBox;
 import android.bluebox.model.PasswordCrypto;
 import android.bluebox.model.StaticBox;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -21,6 +24,8 @@ public class LoginView extends Activity {
 	Button btnLogin;
 	Button btnClear;
 	
+	Intent intent;
+	
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.login);
@@ -32,12 +37,43 @@ public class LoginView extends Activity {
 		
 		btnClear = (Button) findViewById(R.id.btnLoginClear);
 		btnClear.setOnClickListener(clear);
+		
+		intent = new Intent(LoginView.this, WorkspaceListView.class);
 	}
 	
 	private OnClickListener login = new OnClickListener() {
 		
 		@Override
 		public void onClick(View arg0) {
+			new Login().execute();	
+		}
+	};
+	
+	private OnClickListener clear = new OnClickListener() {
+		
+		@Override
+		public void onClick(View arg0) {
+			edtPassword.setText("");
+		}
+	};
+	
+	public void toastShow(String str) {
+		Toast.makeText(getBaseContext(), str, Toast.LENGTH_SHORT).show();
+	}
+	
+	public class Login extends AsyncTask<Void, Void, Void> {
+
+		private final ProgressDialog dialog = new ProgressDialog(LoginView.this);
+		boolean foundHost = false;
+		
+		protected void onPreExecute() {
+			this.dialog.setTitle("Searching server");
+			this.dialog.setMessage("Please wait...");
+			this.dialog.show();
+		}
+		
+		@Override
+		protected Void doInBackground(Void... arg0) {
 			try {
 				StaticBox.passwordCrypto = new PasswordCrypto();
 				StaticBox.passwordCrypto.readFile(openFileInput(StaticBox.PWD_MD5));
@@ -51,33 +87,30 @@ public class LoginView extends Activity {
 					StaticBox.keyCrypto = new KeyCrypto();
 					StaticBox.keyCrypto.init(openFileInput(StaticBox.KEY_FILE), StaticBox.passwordCrypto);
 					
-					Toast.makeText(getBaseContext(), "Successful", Toast.LENGTH_LONG).show();
-					Intent intent = new Intent(LoginView.this, WorkspaceListView.class);
-//					Intent intent = new Intent(LoginView.this, SemanticListView.class);
-//					Intent intent = new Intent(LoginView.this, TagListView.class);
-//					Intent intent = new Intent(LoginView.this, MatchingListView.class);
+					toastShow("Successful");
+					
 					startActivity(intent);
 					finish();
 				} else {
-					Toast.makeText(getBaseContext(), "Unsuccessful", Toast.LENGTH_LONG).show();
+					toastShow("Unsuccessful");
 				}
 				
 			} catch (FileNotFoundException e) {
-				Toast.makeText(getBaseContext(), "File not found", Toast.LENGTH_LONG).show();
+				toastShow("File not found");
 				e.printStackTrace();
 			} catch (Exception e) {
-				Toast.makeText(getBaseContext(), "Error", Toast.LENGTH_LONG).show();
+				toastShow("Error");
 				e.printStackTrace();
 			}
-			
+			return null;
 		}
-	};
-	
-	private OnClickListener clear = new OnClickListener() {
 		
-		@Override
-		public void onClick(View arg0) {
-			edtPassword.setText("");
+		protected void onProgressUpdate(final Void unused) {
 		}
-	};
+		
+		protected void onPostExecute(final Void unused) {
+			if (this.dialog.isShowing())
+				this.dialog.dismiss();
+		}
+	}
 }

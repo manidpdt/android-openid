@@ -4,11 +4,16 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
 import android.app.Activity;
+import android.bluebox.view.ListenThread;
+import android.bluebox.view.MatchingListView;
 import android.content.Context;
+import android.content.Intent;
+import android.os.AsyncTask;
 import android.widget.Toast;
 
 public class NetworkBox extends Activity {
@@ -37,7 +42,7 @@ public class NetworkBox extends Activity {
 
 	public static boolean hostIsFound = false;
 	public static boolean isConnecting = false;
-
+	
 	public static void setHostIP(String IP) {
 		hostIP = IP;
 	}
@@ -85,18 +90,14 @@ public class NetworkBox extends Activity {
 		}
 	}
 
-	public static boolean findHost(Context context, String hostIP) {
+	public static boolean findHost(String hostIP) {
 
 		if (!connect(hostIP))
 			return false;
 
-		boolean b = sendMessage(REQUESTWELCOME);
-		
-		Toast.makeText(context, String.valueOf(b), Toast.LENGTH_SHORT).show();
+		sendMessage(REQUESTWELCOME);
 		
 		String message = recieveMessage();
-
-		Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
 
 		if (message != null && message.trim().equals(WELCOMECONNECTING)) {
 			hostIsFound = true;
@@ -164,9 +165,6 @@ public class NetworkBox extends Activity {
 		
 		if (message != null && message.trim().equals(RESPONEPAIRCODE)) {
 			PAIRCODE = str;
-//			connect();
-//			Thread listenThread = new Thread(new ListenThread());
-//			listenThread.start();
 			return true;
 		}
 		
@@ -178,5 +176,9 @@ public class NetworkBox extends Activity {
 			return false;
 		
 		return sendMessage(RESPONECONTENT + SEPERATECHAR + FILLFIELD + SEPERATECHAR + str);
+	}
+	
+	public static String getPairCode() {
+		return PAIRCODE;
 	}
 }

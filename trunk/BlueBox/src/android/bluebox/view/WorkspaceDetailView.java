@@ -31,6 +31,8 @@ public class WorkspaceDetailView extends Activity {
 
 	static int NEW_WORKSPACE = 0;
 	static int EDIT_WORKSPACE = 1;
+	
+	Context thisContext;
 
 	String workspaceName = "null";
 
@@ -56,6 +58,7 @@ public class WorkspaceDetailView extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.workspacedetail);
+		thisContext = this.getBaseContext();
 
 		/*
 		 * Check if we create a new workspace or edit one
@@ -323,23 +326,24 @@ public class WorkspaceDetailView extends Activity {
 		
 		@Override
 		protected Void doInBackground(Void... arg0) {
-			foundHost = NetworkBox.findHost(getApplicationContext(), hostIP);
-			if (foundHost) {
-				txtNetwork.setText(hostIP);
-			}
+			foundHost = NetworkBox.findHost(hostIP);
+			
 			return null;
 		}
 		
+		protected void onProgressUpdate(final Void unused) {
+		}
 		
 		protected void onPostExecute(final Void unused) {
 			if (this.dialog.isShowing())
 				this.dialog.dismiss();
 			
 			if (foundHost) {
-				Toast.makeText(getBaseContext(), "Server found",
+				txtNetwork.setText(hostIP);
+				Toast.makeText(thisContext, "Server found",
 						Toast.LENGTH_SHORT).show();		
 			} else {
-				Toast.makeText(getBaseContext(), "Server not found",
+				Toast.makeText(thisContext, "Server not found",
 						Toast.LENGTH_SHORT).show();
 			}
 		}
