@@ -87,7 +87,8 @@ public class NetworkBox extends Activity {
 
 	public static boolean findHost(Context context, String hostIP) {
 
-		connect(hostIP);
+		if (!connect(hostIP))
+			return false;
 
 		boolean b = sendMessage(REQUESTWELCOME);
 		

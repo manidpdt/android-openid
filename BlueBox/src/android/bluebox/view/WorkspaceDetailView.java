@@ -8,6 +8,7 @@ import java.util.Properties;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.bluebox.R;
 import android.bluebox.model.NetworkBox;
 import android.bluebox.model.StaticBox;
@@ -16,11 +17,13 @@ import android.content.DialogInterface;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -93,6 +96,8 @@ public class WorkspaceDetailView extends Activity {
 
 				edtName.setText(StaticBox.keyCrypto.decrypt(workspaceName));
 				txtNetwork.setText(StaticBox.keyCrypto.decrypt(properties.getProperty("network")));
+				hostIP = txtNetwork.getText().toString();
+				
 				txtLocation.setText(StaticBox.keyCrypto.decrypt(properties.getProperty("gps")));
 
 			} catch (FileNotFoundException e) {
@@ -281,16 +286,7 @@ public class WorkspaceDetailView extends Activity {
 				// TODO Auto-generated method stub
 				String IP = edtName.getText().toString().trim();
 				if (IP.length() > 0) {
-					boolean b = NetworkBox.findHost(getBaseContext(), IP);
-					if (b) {
-						Toast.makeText(getBaseContext(), "Server found",
-								Toast.LENGTH_SHORT).show();
-						hostIP = IP;
-						txtNetwork.setText(hostIP);
-					} else {
-						Toast.makeText(getBaseContext(), "Server not found",
-								Toast.LENGTH_SHORT).show();
-					}
+					findingServer(IP);
 				} else {
 					Toast.makeText(getBaseContext(), "Please input server IP",
 							Toast.LENGTH_SHORT).show();
@@ -308,5 +304,45 @@ public class WorkspaceDetailView extends Activity {
 		});
 		alert.show();
 	}
+	
+	public void findingServer(String IP) {
+		hostIP = IP;
+		new FindingServer().execute();
+	}
 
+	public class FindingServer extends AsyncTask<Void, Void, Void> {
+
+		private final ProgressDialog dialog = new ProgressDialog(WorkspaceDetailView.this);
+		boolean foundHost = false;
+		
+		protected void onPreExecute() {
+			this.dialog.setTitle("Searching server");
+			this.dialog.setMessage("Please wait...");
+			this.dialog.show();
+		}
+		
+		@Override
+		protected Void doInBackground(Void... arg0) {
+			foundHost = NetworkBox.findHost(getApplicationContext(), hostIP);
+			if (foundHost) {
+				txtNetwork.setText(hostIP);
+			}
+			return null;
+		}
+		
+		
+		protected void onPostExecute(final Void unused) {
+			if (this.dialog.isShowing())
+				this.dialog.dismiss();
+			
+			if (foundHost) {
+				Toast.makeText(getBaseContext(), "Server found",
+						Toast.LENGTH_SHORT).show();		
+			} else {
+				Toast.makeText(getBaseContext(), "Server not found",
+						Toast.LENGTH_SHORT).show();
+			}
+		}
+	}
+	
 }
